@@ -22,8 +22,6 @@ st.sidebar.write("""
 kw_raw = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw = ''.join(kw_raw)
 
-st.table(kw)
-
 st.write(f"""
 ### **「{kw}」** のグーグルトレンド
 """)
