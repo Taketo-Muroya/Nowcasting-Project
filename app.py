@@ -22,7 +22,7 @@ st.sidebar.write("""
 kw = st.sidebar.text_input('検索ワードを記入してください')
 
 st.write(f"""
-### **{kw}日間** のグーグルトレンド
+### **「{kw}」** のグーグルトレンド
 """)
 
 # Set keyword ("失業" = "unemployment")
