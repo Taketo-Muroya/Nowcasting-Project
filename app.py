@@ -1,83 +1,63 @@
 import pandas as pd
-import yfinance as yf
 import altair as alt
 import streamlit as st
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from statsmodels.tsa.seasonal import seasonal_decompose
 
-st.title('米国株価可視化アプリ')
+# Import packages
+from pytrends.request import TrendReq
+plt.rcParams['font.family'] = 'IPAexGothic'
+
+# API Connection
+pytrends = TrendReq(hl='ja-JP', tz=360)
+
+st.title('グーグルトレンドによる景気ナウキャスティング')
 
 st.sidebar.write("""
 # GAFA株価
 こちらは株価可視化ツールです。以下のオプションから表示日数を指定できます。
 """)
 
-st.sidebar.write("""
-## 表示日数選択
-""")
-
-days = st.sidebar.slider('日数', 1, 50, 20)
+kw = st.sidebar.text_input('検索ワードを記入してください')
 
 st.write(f"""
-### 過去 **{days}日間** のGAFA株価
+### 過去 **{kw}日間** のGAFA株価
 """)
 
-@st.cache
-def get_data(days, tickers):
-    df = pd.DataFrame()
-    for company in tickers.keys():
-        tkr = yf.Ticker(tickers[company])
-        hist = tkr.history(period=f'{days}d')
-        hist.index = hist.index.strftime('%d %B %Y')
-        hist = hist[['Close']]
-        hist.columns = [company]
-        hist = hist.T
-        hist.index.name = 'Name'
-        df = pd.concat([df, hist])
-    return df
+#@st.cache
+# Set keyword ("失業" = "unemployment")
+pytrends.build_payload(kw, timeframe='2004-01-01 2021-11-30', geo='JP')
+gt1 = pytrends.interest_over_time()
+gt1 = gt1.rename(columns = {"失業": "unemployment", "isPartial": "info"})
+gt1.to_csv("gt1.csv")
+dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
 
-try: 
-    st.sidebar.write("""
-    ## 株価の範囲指定
-    """)
-    ymin, ymax = st.sidebar.slider(
-        '範囲を指定してください。',
-        0.0, 3500.0, (0.0, 3500.0)
-    )
+# Extract trend factor
+s1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq')
+t1 = s1.trend
+plt.plot(t1)
+plt.plot(gt1.iloc[:,0], linestyle='--')
 
-    tickers = {
-        'apple': 'AAPL',
-        'facebook': 'FB',
-        'google': 'GOOGL',
-        'microsoft': 'MSFT',
-        'netflix': 'NFLX',
-        'amazon': 'AMZN'
-    }
-    df = get_data(days, tickers)
-    companies = st.multiselect(
-        '会社名を選択してください。',
-        list(df.index),
-        ['google', 'amazon', 'facebook', 'apple']
-    )
+# Check correlation
+level = ibc['Coincident Index'][228:]
+level.index = t1.index
+cor = level.corr(t1)
+print("Correlation of level: {:.2f}".format(cor))
 
-    if not companies:
-        st.error('少なくとも一社は選んでください。')
-    else:
-        data = df.loc[companies]
-        st.write("### 株価 (USD)", data.sort_index())
-        data = data.T.reset_index()
-        data = pd.melt(data, id_vars=['Date']).rename(
-            columns={'value': 'Stock Prices(USD)'}
-        )
-        chart = (
-            alt.Chart(data)
-            .mark_line(opacity=0.8, clip=True)
-            .encode(
-                x="Date:T",
-                y=alt.Y("Stock Prices(USD):Q", stack=None, scale=alt.Scale(domain=[ymin, ymax])),
-                color='Name:N'
-            )
-        )
-        st.altair_chart(chart, use_container_width=True)
-except:
-    st.error(
-        "おっと！なにかエラーが起きているようです。"
-    )
+a1 = gt1.iloc[:,0].pct_change(12)
+ann = ibc['Coincident ann'][228:]
+ann.index = a1.index
+cor = ann.corr(a1)
+print("Correlation of YoY: {:.2f}".format(cor))
+
+# Plot trend
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(t1.index, ibc['Coincident Index'][228:], linestyle='-', color='b', label='IBC')
+ax.plot(t1.index, t1, linestyle='--', color='#e46409', label='google search: "unemployment"')
+ax.legend()
+plt.title('Google Search: "Unemployment"')
+plt.savefig("google1.png")
