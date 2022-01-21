@@ -120,6 +120,6 @@ ts = pd.concat([y, gtrend_l], axis=1)
 #ts = pd.read_csv('data/ts.csv', index_col=0, date_parser=dateparse, dtype='float')
 
 # set the dataset
-#features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
-#st.table(features.tail())
+features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
+st.table(features.tail())
 
