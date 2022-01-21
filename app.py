@@ -28,7 +28,7 @@ st.write(f"""
 # Set keyword ("失業" = "unemployment")
 pytrends.build_payload(kw, timeframe='2004-01-01 2021-11-30', geo='JP')
 gt1 = pytrends.interest_over_time()
-st.line_chart(gt1.iloc[:,0])
+st.line_chart(gt1.iloc[:,1])
 #gt1 = gt1.rename(columns = {"失業": "unemployment", "isPartial": "info"})
 #gt1.to_csv("gt1.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
