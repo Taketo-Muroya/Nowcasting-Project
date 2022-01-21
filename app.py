@@ -111,8 +111,8 @@ y = ibc[228:]
 y = y.set_index('time')
 y.index = gtrend_l.index
 ts = pd.concat([y, gtrend_l], axis=1)
-ts['date'] = pd.to_datetime(ts['date'])
-ts.set_index('date', inplace=True)
+#ts['date'] = pd.to_datetime(ts['date'])
+#ts.set_index('date', inplace=True)
 
 #st.dataframe(y.tail())
 #st.dataframe(gtrend_l.tail())
