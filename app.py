@@ -28,7 +28,7 @@ st.write(f"""
 #@st.cache
 ibc = pd.read_csv('ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
-st.table(ibc)
+st.table(ibc.tail(10))
 plt.plot(ibc)
 
 # Set keyword ("失業" = "unemployment")
