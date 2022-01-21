@@ -14,12 +14,6 @@ pytrends = TrendReq(hl='ja-JP', tz=360)
 
 st.title('グーグルトレンドによる景気ナウキャスティング')
 
-#@st.cache
-ibc = pd.read_csv('ibc_new.csv')
-ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
-st.table(ibc.tail(10))
-st.line_chart(ibc['Coincident Index'])
-
 st.sidebar.write("""
 # GAFA株価
 こちらは株価可視化ツールです。以下のオプションから表示日数を指定できます。
@@ -28,7 +22,7 @@ st.sidebar.write("""
 kw = st.sidebar.text_input('検索ワードを記入してください')
 
 st.write(f"""
-### 過去 **{kw}日間** のGAFA株価
+### **{kw}日間** のグーグルトレンド
 """)
 
 # Set keyword ("失業" = "unemployment")
@@ -39,3 +33,9 @@ st.line_chart(gt1.iloc[:,0])
 #gt1.to_csv("gt1.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
 #gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
+
+#@st.cache
+ibc = pd.read_csv('ibc_new.csv')
+ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+st.table(ibc.tail(10))
+st.line_chart(ibc['Coincident Index'])
