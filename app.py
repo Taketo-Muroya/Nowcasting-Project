@@ -29,7 +29,7 @@ st.write(f"""
 ibc = pd.read_csv('ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 st.table(ibc.tail(10))
-plt.plot(ibc)
+st.line_chart(ibc['Coincident Index'])
 
 # Set keyword ("失業" = "unemployment")
 pytrends.build_payload(kw, timeframe='2004-01-01 2021-11-30', geo='JP')
