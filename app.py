@@ -21,6 +21,8 @@ st.sidebar.write("""
 
 kw = st.sidebar.text_input('検索ワードを記入してください', '失業')
 
+st.write(len(kw))
+
 #st.write(f"""
 #### **「{kw}」** のグーグルトレンド
 #""")
