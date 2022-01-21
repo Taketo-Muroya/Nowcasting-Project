@@ -110,11 +110,11 @@ gtrend_y = pd.concat([a1, a2], axis=1)
 
 
 # Set time series dataset
-X = pd.concat([gtrend_l, gtrend_y], axis=1)
 y = ibc[228:]
 y = y.set_index('time')
-X.index = y.index
-ts = pd.concat([y, X], axis=1)
+y.index = gtrend_l .index
+ts = pd.concat([y, gtrend_l ], axis=1)
+
 #ts.to_csv("data/ts.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%b-%y')
 #ts = pd.read_csv('data/ts.csv', index_col=0, date_parser=dateparse, dtype='float')
@@ -123,5 +123,4 @@ ts = pd.concat([y, X], axis=1)
 # set the dataset
 features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
 st.dataframe(features.tail())
-
 
