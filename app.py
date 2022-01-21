@@ -1,7 +1,6 @@
 import pandas as pd
 import altair as alt
 import streamlit as st
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from statsmodels.tsa.seasonal import seasonal_decompose
