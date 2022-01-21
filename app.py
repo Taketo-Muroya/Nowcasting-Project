@@ -113,6 +113,7 @@ y = ibc[228:]
 y = y.set_index('time')
 y.index = gtrend_l.index
 ts = pd.concat([y, gtrend_l], axis=1)
+st.table(ts)
 
 #ts.to_csv("data/ts.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%b-%y')
@@ -120,5 +121,5 @@ ts = pd.concat([y, gtrend_l], axis=1)
 
 # set the dataset
 features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
-st.dataframe(features.tail())
+st.table(features.tail())
 
