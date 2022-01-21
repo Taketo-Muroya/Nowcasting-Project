@@ -100,21 +100,17 @@ cor = ann.corr(a2)
 st.write("Correlation of YoY: {:.2f}".format(cor))
 
 
-
-
 # Combine google trend (level)
 gtrend_l = pd.concat([t1, t2], axis=1)
 
 # Combine google trend (YoY)
-#gtrend_y = pd.concat([a1, a2], axis=1)
+gtrend_y = pd.concat([a1, a2], axis=1)
 
 # Set time series dataset
-y = ibc[228:]
-y = y.set_index('time')
-y.index = gtrend_l.index
-ts = pd.concat([y, gtrend_l], axis=1)
-
-ts
+#y = ibc[228:]
+#y = y.set_index('time')
+#y.index = gtrend_l.index
+#ts = pd.concat([y, gtrend_l], axis=1)
 
 #ts.to_csv("data/ts.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%b-%y')
