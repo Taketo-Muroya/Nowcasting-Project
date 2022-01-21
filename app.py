@@ -26,7 +26,7 @@ st.write(f"""
 """)
 
 #@st.cache
-ibc = pd.read_csv('data/ibc_new.csv')
+ibc = pd.read_csv('ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 ibc
 
@@ -34,9 +34,9 @@ ibc
 pytrends.build_payload(kw, timeframe='2004-01-01 2021-11-30', geo='JP')
 gt1 = pytrends.interest_over_time()
 gt1 = gt1.rename(columns = {"失業": "unemployment", "isPartial": "info"})
-gt1.to_csv("data/gt1.csv")
+gt1.to_csv("gt1.csv")
 dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-gt1 = pd.read_csv('data/gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
+gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
 
 # Extract trend factor
 s1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq')
@@ -63,4 +63,4 @@ ax.plot(t1.index, ibc['Coincident Index'][228:], linestyle='-', color='b', label
 ax.plot(t1.index, t1, linestyle='--', color='#e46409', label='google search: "unemployment"')
 ax.legend()
 plt.title('Google Search: "Unemployment"')
-plt.savefig("images/google1.png")
+plt.savefig("google1.png")
