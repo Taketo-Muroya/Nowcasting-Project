@@ -39,25 +39,27 @@ gt1.to_csv("gt1.csv")
 dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
 gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
 
-st.line_chart(gt1.iloc[:,0])
-
 # Extract trend factor
 s1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq')
 t1 = s1.trend
-plt.plot(t1)
-plt.plot(gt1.iloc[:,0], linestyle='--')
+st.line_chart(t1)
+st.line_chart(gt1.iloc[:,0])
+#plt.plot(t1)
+#plt.plot(gt1.iloc[:,0], linestyle='--')
 
 # Check correlation
 level = ibc['Coincident Index'][228:]
 level.index = t1.index
 cor = level.corr(t1)
-print("Correlation of level: {:.2f}".format(cor))
+st.write("Correlation of level: {:.2f}".format(cor))
+#print("Correlation of level: {:.2f}".format(cor))
 
 a1 = gt1.iloc[:,0].pct_change(12)
 ann = ibc['Coincident ann'][228:]
 ann.index = a1.index
 cor = ann.corr(a1)
-print("Correlation of YoY: {:.2f}".format(cor))
+st.write("Correlation of YoY: {:.2f}".format(cor))
+#print("Correlation of YoY: {:.2f}".format(cor))
 
 # Plot trend
 fig = plt.figure()
