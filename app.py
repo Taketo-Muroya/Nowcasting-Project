@@ -19,7 +19,7 @@ st.sidebar.write("""
 こちらは株価可視化ツールです。以下のオプションから表示日数を指定できます。
 """)
 
-kw = st.sidebar.text_input('検索ワードを記入してください')
+kw = st.sidebar.text_input('検索ワードを記入してください', '失業')
 
 st.write(f"""
 ### **「{kw}」** のグーグルトレンド
