@@ -1,3 +1,2 @@
-matplotlib.pyplot
-statsmodels.api
-statsmodels.tsa.seasonal
+matplotlib
+statsmodels
