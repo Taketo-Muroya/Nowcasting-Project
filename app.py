@@ -107,9 +107,9 @@ gtrend_l = pd.concat([t1, t2], axis=1)
 gtrend_y = pd.concat([a1, a2], axis=1)
 
 # Set time series dataset
-#y = ibc[228:]
-#y = y.set_index('time')
-#y.index = gtrend_l.index
+y = ibc[228:]
+y = y.set_index('time')
+y.index = gtrend_l.index
 #ts = pd.concat([y, gtrend_l], axis=1)
 
 #ts.to_csv("data/ts.csv")
