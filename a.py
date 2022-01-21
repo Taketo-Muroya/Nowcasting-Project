@@ -97,15 +97,15 @@ ex.write('問い合わせ内容を書く')
 
 # Progress Bar
 
-'Start!!'
+#'Start!!'
 
-latest_iteration = st.empty()
-bar = st.progress(0)
+#latest_iteration = st.empty()
+#bar = st.progress(0)
 
-import time
-for i in range(100):
-    latest_iteration.text(f'Iteration {i+1}')
-    bar.progress(i+1)
-    time.sleep(0.1)
+#import time
+#for i in range(100):
+#    latest_iteration.text(f'Iteration {i+1}')
+#    bar.progress(i+1)
+#    time.sleep(0.1)
 
-'Done!!'
+#'Done!!'
