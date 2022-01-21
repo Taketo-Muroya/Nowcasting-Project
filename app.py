@@ -63,4 +63,4 @@ ax.plot(t1.index, ibc['Coincident Index'][228:], linestyle='-', color='b', label
 ax.plot(t1.index, t1, linestyle='--', color='#e46409', label='google search: "unemployment"')
 ax.legend()
 plt.title('Google Search: "Unemployment"')
-plt.savefig("image/google1.png")
+plt.savefig("images/google1.png")
