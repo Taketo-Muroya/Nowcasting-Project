@@ -15,7 +15,7 @@ pytrends = TrendReq(hl='ja-JP', tz=360)
 st.title('景気ナウキャスティング')
 
 #@st.cache
-ibc = pd.read_csv('ibc_new.csv')
+ibc = pd.read_csv('data/ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 #st.table(ibc.tail(10))
 #st.line_chart(ibc['Coincident Index'])
