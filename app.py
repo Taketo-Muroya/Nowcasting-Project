@@ -29,7 +29,8 @@ st.write(f"""
 """)
 
 # Set keyword ("失業" = "unemployment")
-pytrends.build_payload(kw, timeframe='2004-01-01 2021-11-30', geo='JP')
+kw_list1 = ["失業"]
+pytrends.build_payload(kw_list1, timeframe='2004-01-01 2021-11-30', geo='JP')
 gt1 = pytrends.interest_over_time()
 
 st.table(gt1.tail(10))
