@@ -110,7 +110,7 @@ gtrend_y = pd.concat([a1, a2], axis=1)
 y = ibc[228:]
 y = y.set_index('time')
 y.index = gtrend_l.index
-#ts = pd.concat([y, gtrend_l], axis=1)
+ts = pd.concat([y, gtrend_l], axis=1)
 
 #ts.to_csv("data/ts.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%b-%y')
