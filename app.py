@@ -39,6 +39,8 @@ gt1.to_csv("gt1.csv")
 dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
 gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
 
+st.line_chart(gt1.iloc[:,0])
+
 # Extract trend factor
 s1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq')
 t1 = s1.trend
