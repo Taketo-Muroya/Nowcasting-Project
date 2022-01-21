@@ -65,4 +65,53 @@ cor = ann.corr(a1)
 st.write("Correlation of YoY: {:.2f}".format(cor))
 #print("Correlation of YoY: {:.2f}".format(cor))
 
+st.write(f"""
+### **「{kw2}」** のグーグルトレンド
+""")
+
+# Set keyword ("貯金" = "saving")
+kw_list2 = [kw2]
+pytrends.build_payload(kw_list2, timeframe='2004-01-01 2021-11-30', geo='JP')
+gt2 = pytrends.interest_over_time()
+#gt2 = gt2.rename(columns = {"貯金": "saving", "isPartial": "info"})
+#gt2.to_csv("data/gt2.csv")
+#dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+#gt2 = pd.read_csv('data/gt2.csv', index_col=0, date_parser=dateparse, dtype='float')
+st.table(gt2.tail(10))
+st.line_chart(gt2.iloc[:,0])
+
+# Extract trend factor
+s2 = seasonal_decompose(gt2.iloc[:,0], extrapolate_trend='freq')
+t2 = s2.trend
+st.line_chart(t2)
+#plt.plot(t2)
+#plt.plot(gt2.iloc[:,0], linestyle='--')
+
+# Check correlation
+level = ibc['Coincident Index'][228:]
+level.index = t2.index
+cor = level.corr(t2)
+st.write("Correlation of level: {:.2f}".format(cor))
+
+a2 = gt2.iloc[:,0].pct_change(12)
+ann = ibc['Coincident ann'][228:]
+ann.index = a2.index
+cor = ann.corr(a2)
+st.write("Correlation of YoY: {:.2f}".format(cor))
+
+
+
+
+# Combine google trend (level)
+gtrend_l = pd.concat([t1, t2], axis=1)
+
+# Combine google trend (YoY)
+gtrend_y = pd.concat([a1, a2], axis=1)
+
+
+
+# set the dataset
+features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
+st.dataframe(features.tail())
+
 
