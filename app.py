@@ -19,13 +19,12 @@ st.sidebar.write("""
 こちらは株価可視化ツールです。以下のオプションから表示日数を指定できます。
 """)
 
-kw = st.sidebar.text_input('検索ワードを記入してください', '失業')
+kw_raw = st.sidebar.text_input('検索ワードを記入してください', '失業')
+kw = ''.join(kw_raw)
 
-st.write(len(kw))
-
-#st.write(f"""
-#### **「{kw}」** のグーグルトレンド
-#""")
+st.write(f"""
+### **「{kw}」** のグーグルトレンド
+""")
 
 # Set keyword ("失業" = "unemployment")
 pytrends.build_payload(kw, timeframe='2004-01-01 2021-11-30', geo='JP')
