@@ -14,7 +14,6 @@ pytrends = TrendReq(hl='ja-JP', tz=360)
 
 st.title('景気ナウキャスティング')
 
-#@st.cache
 ibc = pd.read_csv('data/ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 #st.table(ibc.tail(10))
@@ -33,6 +32,7 @@ st.write(f"""
 """)
 
 # Set keyword ("失業" = "unemployment")
+#@st.cache
 kw_list1 = [kw1]
 pytrends.build_payload(kw_list1, timeframe='2004-01-01 2021-11-30', geo='JP')
 gt1 = pytrends.interest_over_time()
@@ -70,6 +70,7 @@ st.write(f"""
 """)
 
 # Set keyword ("貯金" = "saving")
+#@st.cache
 kw_list2 = [kw2]
 pytrends.build_payload(kw_list2, timeframe='2004-01-01 2021-11-30', geo='JP')
 gt2 = pytrends.interest_over_time()
@@ -104,13 +105,17 @@ st.write("Correlation of YoY: {:.2f}".format(cor))
 gtrend_l = pd.concat([t1, t2], axis=1)
 
 # Combine google trend (YoY)
-gtrend_y = pd.concat([a1, a2], axis=1)
+gtrend_y = pd.concat([a1, a2], axis=1).rename(columns={'unemployment': 'unemployment_rate', 'saving': 'saving_rate'})
 
 # Set time series dataset
+X = pd.merge(gtrend_l, gtrend_y, on='date')
 y = ibc[228:]
 y = y.set_index('time')
-y.index = gtrend_l.index
-ts = pd.concat([y, gtrend_l], axis=1)
+y.index = X.index
+ts = pd.merge(y, X, on='date')
+
+st.dataframe(ts)
+
 #ts['date'] = pd.to_datetime(ts['date'])
 #ts.set_index('date', inplace=True)
 
