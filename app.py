@@ -231,7 +231,7 @@ single_step_model.add(tf.keras.layers.Dense(1))
 single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
 
 # train the model
-single_step_history = single_step_model.fit(train_data_single, epochs=30, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50)
+single_step_history = single_step_model.fit(train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50)
 
 # evaluate the model
 model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
@@ -244,6 +244,7 @@ actual = pd.DataFrame(y_val_single*data_std[0]+data_mean[0])
 actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
 
 st.line_chart(predict)
+st.line_chart(actual)
 
 #plt.plot(features.iloc[TRAIN_SPLIT+past_history:,0], label="actual")
 #plt.plot(predict, "r", linestyle='--', label="predict")
