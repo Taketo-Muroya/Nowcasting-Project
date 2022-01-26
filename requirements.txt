@@ -2,6 +2,7 @@ matplotlib
 statsmodels
 pytrends
 tensorflow
+sklearn
 
 
 
