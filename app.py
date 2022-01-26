@@ -47,7 +47,6 @@ gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
 # Extract trend factor
 s1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq')
 t1 = s1.trend
-t1 = t1.rename(columns = {"trend":"var1"})
 st.line_chart(t1)
 #plt.plot(t1)
 #plt.plot(gt1.iloc[:,0], linestyle='--')
@@ -85,7 +84,6 @@ st.line_chart(gt2.iloc[:,0])
 # Extract trend factor
 s2 = seasonal_decompose(gt2.iloc[:,0], extrapolate_trend='freq')
 t2 = s2.trend
-t2 = t2.rename(columns = {"trend":"var2"})
 st.line_chart(t2)
 #plt.plot(t2)
 #plt.plot(gt2.iloc[:,0], linestyle='--')
@@ -118,17 +116,4 @@ ts = pd.merge(y, X, on='date')
 
 st.dataframe(ts)
 
-#ts['date'] = pd.to_datetime(ts['date'])
-#ts.set_index('date', inplace=True)
-
-#st.dataframe(y.tail())
-#st.dataframe(gtrend_l.tail())
-
-#ts.to_csv("data/ts.csv")
-#dateparse = lambda dates: pd.datetime.strptime(dates, '%b-%y')
-#ts = pd.read_csv('data/ts.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-# set the dataset
-#features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
-#st.table(features.tail())
 
