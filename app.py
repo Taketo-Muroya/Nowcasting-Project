@@ -46,7 +46,7 @@ gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
 
 # Extract trend factor
 t1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq').trend
-t1 = t1.rename(columns = {"trend":"var1"})
+t1.columns = "var1"
 st.line_chart(t1)
 #plt.plot(t1)
 #plt.plot(gt1.iloc[:,0], linestyle='--')
