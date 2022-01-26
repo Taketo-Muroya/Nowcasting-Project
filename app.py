@@ -114,7 +114,7 @@ y = y.set_index('time')
 y.index = X.index
 ts = pd.merge(y, X, on='date')
 
-st.dataframe
+st.dataframe(ts)
 
 #ts['date'] = pd.to_datetime(ts['date'])
 #ts.set_index('date', inplace=True)
