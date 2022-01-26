@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import statsmodels.api as sm
 from statsmodels.tsa.seasonal import seasonal_decompose
+from math import sqrt
 
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
