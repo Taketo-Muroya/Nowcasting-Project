@@ -104,11 +104,8 @@ st.write("Correlation of YoY: {:.2f}".format(cor))
 # Combine google trend (level)
 gtrend_l = pd.concat([t1, t2], axis=1)
 
-# Combine google trend (YoY)
-gtrend_y = pd.concat([a1, a2], axis=1).rename(columns={'unemployment': 'unemployment_rate', 'saving': 'saving_rate'})
-
 # Set time series dataset
-X = pd.merge(gtrend_l, gtrend_y, on='date')
+X = gtrend_l
 y = ibc[228:]
 y = y.set_index('time')
 y.index = X.index
