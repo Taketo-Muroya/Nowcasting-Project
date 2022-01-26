@@ -45,8 +45,7 @@ gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
 #gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
 
 # Extract trend factor
-s1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq')
-t1 = pd.DataFrame(s1.trend).rename(columns = {"trend":"trend-1"})
+t1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq').trend
 st.line_chart(t1)
 #plt.plot(t1)
 #plt.plot(gt1.iloc[:,0], linestyle='--')
@@ -82,8 +81,7 @@ st.table(gt2.tail(10))
 st.line_chart(gt2.iloc[:,0])
 
 # Extract trend factor
-s2 = seasonal_decompose(gt2.iloc[:,0], extrapolate_trend='freq')
-t2 = pd.DataFrame(s2.trend).rename(columns = {"trend":"trend-2"})
+t2 = seasonal_decompose(gt2.iloc[:,0], extrapolate_trend='freq').trend
 st.line_chart(t2)
 #plt.plot(t2)
 #plt.plot(gt2.iloc[:,0], linestyle='--')
@@ -102,6 +100,8 @@ st.write("Correlation of YoY: {:.2f}".format(cor))
 
 
 # Combine google trend (level)
+t1 = pd.DataFrame(t1).rename(columns = {"trend":"trend-1"})
+t2 = pd.DataFrame(t2).rename(columns = {"trend":"trend-2"})
 gtrend_l = pd.concat([t1, t2], axis=1)
 
 # Combine google trend (YoY)
