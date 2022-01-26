@@ -39,7 +39,7 @@ gt1 = pytrends.interest_over_time()
 
 st.table(gt1.tail(10))
 st.line_chart(gt1.iloc[:,0])
-#gt1 = gt1.rename(columns = {"失業": "unemployment", "isPartial": "info"})
+gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
 #gt1.to_csv("gt1.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
 #gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
@@ -74,7 +74,7 @@ st.write(f"""
 kw_list2 = [kw2]
 pytrends.build_payload(kw_list2, timeframe='2004-01-01 2021-11-30', geo='JP')
 gt2 = pytrends.interest_over_time()
-#gt2 = gt2.rename(columns = {"貯金": "saving", "isPartial": "info"})
+gt2 = gt2.rename(columns = {kw2:"var2", "isPartial":"info"})
 #gt2.to_csv("data/gt2.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
 #gt2 = pd.read_csv('data/gt2.csv', index_col=0, date_parser=dateparse, dtype='float')
@@ -104,14 +104,17 @@ st.write("Correlation of YoY: {:.2f}".format(cor))
 # Combine google trend (level)
 gtrend_l = pd.concat([t1, t2], axis=1)
 
+# Combine google trend (YoY)
+gtrend_y = pd.concat([a1, a2], axis=1).rename(columns={'var1': 'var1_rate', 'var2': 'var2_rate'})
+
 # Set time series dataset
-X = gtrend_l
+X = pd.merge(gtrend_l, gtrend_y, on='date')
 y = ibc[228:]
 y = y.set_index('time')
 y.index = X.index
 ts = pd.merge(y, X, on='date')
 
-st.dataframe(ts)
+st.dataframe
 
 #ts['date'] = pd.to_datetime(ts['date'])
 #ts.set_index('date', inplace=True)
