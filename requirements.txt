@@ -1,5 +1,5 @@
 matplotlib
-statsmodels==0.10.0
+statsmodels
 pytrends
 tensorflow
 sklearn
