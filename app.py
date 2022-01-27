@@ -189,6 +189,8 @@ ts = pd.merge(y, X, on='date')
 
 st.dataframe(ts)
 
+st.button('Estimation')
+
 # set the dataset
 features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
 #features.tail()
