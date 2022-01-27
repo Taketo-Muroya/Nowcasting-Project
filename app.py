@@ -189,162 +189,162 @@ ts = pd.merge(y, X, on='date')
 
 st.dataframe(ts)
 
-st.button('Estimation')
+if st.button('Estimation'):
 
-# set the dataset
-features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
-#features.tail()
+  # set the dataset
+  features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
+  #features.tail()
 
-# set training percentage
-TRAIN_SPLIT = round(0.8*len(features))
-#print(TRAIN_SPLIT)
-
-# feature scaling
-dataset = features.values
-data_mean = dataset[:TRAIN_SPLIT].mean(axis=0)
-data_std = dataset[:TRAIN_SPLIT].std(axis=0)
-dataset = (dataset-data_mean)/data_std
-
-# create the training and test data
-past_history = 3
-future_target = 0
-STEP = 1
-
-x_train_single, y_train_single = multivariate_data(dataset, dataset[:,0], 0, TRAIN_SPLIT, past_history, future_target, STEP, single_step=True)
-x_val_single, y_val_single = multivariate_data(dataset, dataset[:,0], TRAIN_SPLIT, None, past_history, future_target, STEP, single_step=True)
-
-BATCH_SIZE = 32
-BUFFER_SIZE = 100
-
-train_data_single = tf.data.Dataset.from_tensor_slices((x_train_single, y_train_single))
-train_data_single = train_data_single.cache().shuffle(BUFFER_SIZE).batch(BATCH_SIZE).repeat()
-
-val_data_single = tf.data.Dataset.from_tensor_slices((x_val_single, y_val_single))
-val_data_single = val_data_single.batch(BATCH_SIZE).repeat()
-
-# construct the model
-single_step_model = tf.keras.models.Sequential()
-single_step_model.add(tf.keras.layers.LSTM(8, input_shape=x_train_single.shape[-2:]))
-#single_step_model.add(tf.keras.layers.LSTM(8, kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
-#single_step_model.add(tf.keras.layers.LSTM(8, dropout=0.2, recurrent_dropout=0.2, return_sequences=True))
-#single_step_model.add(tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(4)))
-single_step_model.add(tf.keras.layers.Dense(1))
-
-single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
-
-# train the model
-single_step_history = single_step_model.fit(train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50)
-
-# evaluate the model
-model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
-
-# visualize the result
-predict = pd.DataFrame(single_step_model.predict(x_val_single)*data_std[0]+data_mean[0])
-predict.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
-
-actual = pd.DataFrame(y_val_single*data_std[0]+data_mean[0])
-actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
-
-st.line_chart(predict)
-st.line_chart(actual)
-
-#plt.plot(features.iloc[TRAIN_SPLIT+past_history:,0], label="actual")
-#plt.plot(predict, "r", linestyle='--', label="predict")
-#plt.legend(loc='best')
-#plt.title('RNN-LSTM: Level')
-#plt.savefig("images/google_lstm.png")
-
-st.write("Test set score: {:.2f}".format(r2_score(y_val_single, single_step_model.predict(x_val_single))))
-
-
-# Get the weekly google trend data (unemployment)
-pytrends.build_payload(kw_list1, timeframe='today 5-y', geo='JP')
-#pytrends.build_payload(kw_list, timeframe='2017-01-01 2021-01-16', geo='JP')
-gt3 = pytrends.interest_over_time()
-gt3 = gt3.rename(columns = {kw1:"var1", "isPartial":"info"})
-#gt3.to_csv("data/gt3.csv")
-#dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-#gt3 = pd.read_csv('data/gt3.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-# Extract trend factor
-s3 = seasonal_decompose(gt3.iloc[:,0], extrapolate_trend='freq')
-t3 = s3.trend
-#gtw_u = pd.DataFrame(t3)
-#gtw_u.to_csv("data/gtw_u.csv")
-
-st.line_chart(t3)
-st.line_chart(gt3.iloc[:,0])
-
-
-# Get the weekly google trend data (saving)
-pytrends.build_payload(kw_list2, timeframe='today 5-y', geo='JP')
-#pytrends.build_payload(kw_list, timeframe='2004-01-01 2020-02-29', geo='JP')
-gt4 = pytrends.interest_over_time()
-gt4 = gt4.rename(columns = {kw2: "var2", "isPartial": "info"})
-#gt4.to_csv("data/gt4.csv")
-#dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-#gt4 = pd.read_csv('data/gt4.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-# Extract trend factor
-s4 = seasonal_decompose(gt4.iloc[:,0], extrapolate_trend='freq')
-t4 = s4.trend
-#gtw_s = pd.DataFrame(t4)
-#gtw_s.to_csv("data/gtw_s.csv")
-
-st.line_chart(t4)
-st.line_chart(gt4.iloc[:,0])
-
-# load the weekly ibc data
-dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-# merge google trend with ibc data
-temp = pd.merge(t3, t4, on='date')
-XX = pd.merge(wibc, temp, on='date')
-st.table(XX.tail(10))
-
-# feature scaling
-END = len(XX)-XX['ibc'].isnull().sum()
-dataset = XX.iloc[:END,:].values
-data_mean = dataset.mean(axis=0)
-data_std = dataset.std(axis=0)
-dataset = (dataset-data_mean)/data_std
-
-# create the test data
-x_single, y_single = multivariate_data(dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
-
-# save the output
-past_estimate = pd.DataFrame(single_step_model.predict(x_single)*data_std[0]+data_mean[0])
-past_estimate.index = XX.iloc[past_history:END,:].index
-
-# visualize the result 
-st.line_chart(past_estimate)
-
-# nowcast the future IBC
-for i in range(END, len(XX)):
-  XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
-  #XX.iat[i,0] = XX.iat[i-1,0]
-  temp = XX.iloc[:i+1,:]
-  st.write(temp.tail())
-  st.write('-----------------------------------------------')
+  # set training percentage
+  TRAIN_SPLIT = round(0.8*len(features))
+  #print(TRAIN_SPLIT)
 
   # feature scaling
-  dataset = temp.values
+  dataset = features.values
+  data_mean = dataset[:TRAIN_SPLIT].mean(axis=0)
+  data_std = dataset[:TRAIN_SPLIT].std(axis=0)
+  dataset = (dataset-data_mean)/data_std
+
+  # create the training and test data
+  past_history = 3
+  future_target = 0
+  STEP = 1
+
+  x_train_single, y_train_single = multivariate_data(dataset, dataset[:,0], 0, TRAIN_SPLIT, past_history, future_target, STEP, single_step=True)
+  x_val_single, y_val_single = multivariate_data(dataset, dataset[:,0], TRAIN_SPLIT, None, past_history, future_target, STEP, single_step=True)
+
+  BATCH_SIZE = 32
+  BUFFER_SIZE = 100
+
+  train_data_single = tf.data.Dataset.from_tensor_slices((x_train_single, y_train_single))
+  train_data_single = train_data_single.cache().shuffle(BUFFER_SIZE).batch(BATCH_SIZE).repeat()
+
+  val_data_single = tf.data.Dataset.from_tensor_slices((x_val_single, y_val_single))
+  val_data_single = val_data_single.batch(BATCH_SIZE).repeat()
+
+  # construct the model
+  single_step_model = tf.keras.models.Sequential()
+  single_step_model.add(tf.keras.layers.LSTM(8, input_shape=x_train_single.shape[-2:]))
+  #single_step_model.add(tf.keras.layers.LSTM(8, kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+  #single_step_model.add(tf.keras.layers.LSTM(8, dropout=0.2, recurrent_dropout=0.2, return_sequences=True))
+  #single_step_model.add(tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(4)))
+  single_step_model.add(tf.keras.layers.Dense(1))
+
+  single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
+
+  # train the model
+  single_step_history = single_step_model.fit(train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50)
+
+  # evaluate the model
+  model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
+
+  # visualize the result
+  predict = pd.DataFrame(single_step_model.predict(x_val_single)*data_std[0]+data_mean[0])
+  predict.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
+
+  actual = pd.DataFrame(y_val_single*data_std[0]+data_mean[0])
+  actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
+
+  st.line_chart(predict)
+  st.line_chart(actual)
+
+  #plt.plot(features.iloc[TRAIN_SPLIT+past_history:,0], label="actual")
+  #plt.plot(predict, "r", linestyle='--', label="predict")
+  #plt.legend(loc='best')
+  #plt.title('RNN-LSTM: Level')
+  #plt.savefig("images/google_lstm.png")
+
+  st.write("Test set score: {:.2f}".format(r2_score(y_val_single, single_step_model.predict(x_val_single))))
+
+
+  # Get the weekly google trend data (unemployment)
+  pytrends.build_payload(kw_list1, timeframe='today 5-y', geo='JP')
+  #pytrends.build_payload(kw_list, timeframe='2017-01-01 2021-01-16', geo='JP')
+  gt3 = pytrends.interest_over_time()
+  gt3 = gt3.rename(columns = {kw1:"var1", "isPartial":"info"})
+  #gt3.to_csv("data/gt3.csv")
+  #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+  #gt3 = pd.read_csv('data/gt3.csv', index_col=0, date_parser=dateparse, dtype='float')
+
+  # Extract trend factor
+  s3 = seasonal_decompose(gt3.iloc[:,0], extrapolate_trend='freq')
+  t3 = s3.trend
+  #gtw_u = pd.DataFrame(t3)
+  #gtw_u.to_csv("data/gtw_u.csv")
+
+  st.line_chart(t3)
+  st.line_chart(gt3.iloc[:,0])
+
+
+  # Get the weekly google trend data (saving)
+  pytrends.build_payload(kw_list2, timeframe='today 5-y', geo='JP')
+  #pytrends.build_payload(kw_list, timeframe='2004-01-01 2020-02-29', geo='JP')
+  gt4 = pytrends.interest_over_time()
+  gt4 = gt4.rename(columns = {kw2: "var2", "isPartial": "info"})
+  #gt4.to_csv("data/gt4.csv")
+  #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+  #gt4 = pd.read_csv('data/gt4.csv', index_col=0, date_parser=dateparse, dtype='float')
+
+  # Extract trend factor
+  s4 = seasonal_decompose(gt4.iloc[:,0], extrapolate_trend='freq')
+  t4 = s4.trend
+  #gtw_s = pd.DataFrame(t4)
+  #gtw_s.to_csv("data/gtw_s.csv")
+
+  st.line_chart(t4)
+  st.line_chart(gt4.iloc[:,0])
+
+  # load the weekly ibc data
+  dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+  wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
+
+  # merge google trend with ibc data
+  temp = pd.merge(t3, t4, on='date')
+  XX = pd.merge(wibc, temp, on='date')
+  st.table(XX.tail(10))
+
+  # feature scaling
+  END = len(XX)-XX['ibc'].isnull().sum()
+  dataset = XX.iloc[:END,:].values
   data_mean = dataset.mean(axis=0)
   data_std = dataset.std(axis=0)
   dataset = (dataset-data_mean)/data_std
-  
+
   # create the test data
   x_single, y_single = multivariate_data(dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
-  XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
-  st.write(XX.tail(10))
-  st.write('-----------------------------------------------')
+  # save the output
+  past_estimate = pd.DataFrame(single_step_model.predict(x_single)*data_std[0]+data_mean[0])
+  past_estimate.index = XX.iloc[past_history:END,:].index
 
-# save the output
-future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
+  # visualize the result 
+  st.line_chart(past_estimate)
 
-#plt.plot(single_step_model.predict(x_single)*data_std[0]+data_mean[0], "r", linestyle='--', label="predict")
-df_concat = pd.concat([past_estimate.set_axis(['ibc'], axis='columns'), future_estimate])
-st.line_chart(df_concat)
+  # nowcast the future IBC
+  for i in range(END, len(XX)):
+    XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
+    #XX.iat[i,0] = XX.iat[i-1,0]
+    temp = XX.iloc[:i+1,:]
+    st.write(temp.tail())
+    st.write('-----------------------------------------------')
+
+    # feature scaling
+    dataset = temp.values
+    data_mean = dataset.mean(axis=0)
+    data_std = dataset.std(axis=0)
+    dataset = (dataset-data_mean)/data_std
+    
+    # create the test data
+    x_single, y_single = multivariate_data(dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
+
+    XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
+    st.write(XX.tail(10))
+    st.write('-----------------------------------------------')
+
+  # save the output
+  future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
+
+  #plt.plot(single_step_model.predict(x_single)*data_std[0]+data_mean[0], "r", linestyle='--', label="predict")
+  df_concat = pd.concat([past_estimate.set_axis(['ibc'], axis='columns'), future_estimate])
+  st.line_chart(df_concat)
 
