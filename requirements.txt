@@ -3,8 +3,3 @@ statsmodels
 pytrends
 tensorflow
 sklearn
-
-
-
-
-
