@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import statsmodels.api as sm
 
-from statsmodels.tsa.seasonal import seasonal_decompose
+#from statsmodels.tsa.seasonal import seasonal_decompose
 from math import sqrt
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
@@ -119,7 +119,7 @@ gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
 #gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
 
 # Extract trend factor
-t1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq').trend
+t1 = sm.tsa.seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq').trend
 st.line_chart(t1)
 #plt.plot(t1)
 #plt.plot(gt1.iloc[:,0], linestyle='--')
