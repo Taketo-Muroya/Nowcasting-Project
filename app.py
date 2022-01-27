@@ -5,9 +5,9 @@ import altair as alt
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import statsmodels.api as sm
+
 from statsmodels.tsa.seasonal import seasonal_decompose
 from math import sqrt
-
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import GridSearchCV
@@ -253,3 +253,51 @@ st.line_chart(actual)
 #plt.savefig("images/google_lstm.png")
 
 st.write("Test set score: {:.2f}".format(r2_score(y_val_single, single_step_model.predict(x_val_single))))
+
+
+# Get the weekly google trend data (unemployment)
+pytrends.build_payload(kw_list1, timeframe='today 5-y', geo='JP')
+#pytrends.build_payload(kw_list, timeframe='2017-01-01 2021-01-16', geo='JP')
+gt3 = pytrends.interest_over_time()
+gt3 = gt3.rename(columns = {kw1:"var1", "isPartial":"info"})
+#gt3.to_csv("data/gt3.csv")
+#dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+#gt3 = pd.read_csv('data/gt3.csv', index_col=0, date_parser=dateparse, dtype='float')
+
+# Extract trend factor
+s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend='freq')
+t3 = s3.trend
+#gtw_u = pd.DataFrame(t3)
+#gtw_u.to_csv("data/gtw_u.csv")
+
+st.line_chart(t3)
+st.line_chart(gt3.iloc[:,0])
+
+
+# Get the weekly google trend data (saving)
+pytrends.build_payload(kw_list2, timeframe='today 5-y', geo='JP')
+#pytrends.build_payload(kw_list, timeframe='2004-01-01 2020-02-29', geo='JP')
+gt4 = pytrends.interest_over_time()
+gt4 = gt4.rename(columns = {kw2: "var2", "isPartial": "info"})
+#gt4.to_csv("data/gt4.csv")
+#dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+#gt4 = pd.read_csv('data/gt4.csv', index_col=0, date_parser=dateparse, dtype='float')
+
+# Extract trend factor
+s4 = seasonal_decompose(gt4.iloc[:,0], freq=24, extrapolate_trend='freq')
+t4 = s4.trend
+#gtw_s = pd.DataFrame(t4)
+#gtw_s.to_csv("data/gtw_s.csv")
+
+st.line_chart(t4)
+st.line_chart(gt4.iloc[:,0])
+
+# load the weekly ibc data
+dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
+
+# merge google trend with ibc data
+temp = pd.merge(t3, t4, on='date')
+XX = pd.merge(wibc, temp, on='date')
+st.table(XX.tail(10))
+
