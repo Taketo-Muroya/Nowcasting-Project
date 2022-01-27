@@ -265,7 +265,7 @@ gt3 = gt3.rename(columns = {kw1:"var1", "isPartial":"info"})
 #gt3 = pd.read_csv('data/gt3.csv', index_col=0, date_parser=dateparse, dtype='float')
 
 # Extract trend factor
-s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend=24)
+s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend=6)
 t3 = s3.trend
 #gtw_u = pd.DataFrame(t3)
 #gtw_u.to_csv("data/gtw_u.csv")
