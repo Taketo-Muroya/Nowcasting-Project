@@ -190,6 +190,8 @@ ts = pd.merge(y, X, on='date')
 st.dataframe(ts)
 
 if st.button('Estimation'):
+  comment = st.empty()
+  comment.write('Googleトレンドによる推計を開始します')
 
   # set the dataset
   features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
@@ -348,3 +350,4 @@ if st.button('Estimation'):
   df_concat = pd.concat([past_estimate.set_axis(['ibc'], axis='columns'), future_estimate])
   st.line_chart(df_concat)
 
+  comment.write('推計が完了しました')
