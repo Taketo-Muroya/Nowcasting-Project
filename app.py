@@ -189,9 +189,9 @@ ts = pd.merge(y, X, on='date')
 
 st.dataframe(ts)
 
-if st.button('Estimation'):
+if st.button('推計開始'):
   comment = st.empty()
-  comment.write('Googleトレンドによる推計を開始します')
+  comment.write('Googleトレンドによる推計を実行しています')
 
   # set the dataset
   features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
@@ -269,7 +269,8 @@ if st.button('Estimation'):
   #gt3 = pd.read_csv('data/gt3.csv', index_col=0, date_parser=dateparse, dtype='float')
 
   # Extract trend factor
-  s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend='freq')
+  s3 = seasonal_decompose(gt3.iloc[:,0], extrapolate_trend='freq')
+  #s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend='freq')
   t3 = s3.trend
   #gtw_u = pd.DataFrame(t3)
   #gtw_u.to_csv("data/gtw_u.csv")
@@ -288,7 +289,8 @@ if st.button('Estimation'):
   #gt4 = pd.read_csv('data/gt4.csv', index_col=0, date_parser=dateparse, dtype='float')
 
   # Extract trend factor
-  s4 = seasonal_decompose(gt4.iloc[:,0], freq=24, extrapolate_trend='freq')
+  s4 = seasonal_decompose(gt4.iloc[:,0], extrapolate_trend='freq')
+  #s4 = seasonal_decompose(gt4.iloc[:,0], freq=24, extrapolate_trend='freq')
   t4 = s4.trend
   #gtw_s = pd.DataFrame(t4)
   #gtw_s.to_csv("data/gtw_s.csv")
