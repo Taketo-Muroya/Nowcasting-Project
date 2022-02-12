@@ -111,7 +111,7 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
      return finalmetricdata
 
 ibc = pd.read_csv('data/ibc_new.csv')
-#ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 
 st.title('景気ナウキャスティング')
 
