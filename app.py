@@ -114,21 +114,17 @@ ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 
 st.title('景気ナウキャスティング')
 
-st.sidebar.write("""
-Googleトレンドによる景気予測ツールです。検索ワードを記入してください。
-""")
+st.sidebar.write("""Googleトレンドによる景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 
 st.write(f"""### 「{kw1}」のグーグルトレンド""")
-
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 st.line_chart(data1)
 st.write("Correlation of level: {:.2f}".format(cor_level1))
 st.write("Correlation of YoY: {:.2f}".format(cor_ann1))
 
 st.write(f"""### 「{kw2}」のグーグルトレンド""")
-
 data2, cor_level2, cor_ann2 = google_trend(kw2)
 st.line_chart(data2)
 st.write("Correlation of level: {:.2f}".format(cor_level2))
