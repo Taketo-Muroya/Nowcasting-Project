@@ -37,7 +37,7 @@ def google_trend(kw):
   kw_list = [kw]
   pytrends.build_payload(kw_list, timeframe='2004-01-01 2021-11-30', geo='JP')
   gt = pytrends.interest_over_time()
-  #gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
+  gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
 
   # Extract trend factor
   t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq').trend
