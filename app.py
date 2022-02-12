@@ -51,7 +51,6 @@ def google_trend(kw):
   level = ibc['Coincident Index'][228:]
   level.index = t.index
   cor_level = level.corr(t)
-
   ann = ibc['Coincident ann'][228:]
   ann.index = a.index
   cor_ann = ann.corr(a)
@@ -112,7 +111,7 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
      return finalmetricdata
 
 ibc = pd.read_csv('data/ibc_new.csv')
-ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+#ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 
 st.title('景気ナウキャスティング')
 
@@ -132,21 +131,7 @@ st.line_chart(data2.iloc[:,0:2])
 st.write("Correlation of level: {:.2f}".format(cor_level2))
 st.write("Correlation of YoY: {:.2f}".format(cor_ann2))
 
-# Combine google trend (level)
-#t1 = pd.DataFrame(t1).rename(columns = {"trend":"trend-1"})
-#t2 = pd.DataFrame(t2).rename(columns = {"trend":"trend-2"})
-#gtrend_l = pd.concat([t1, t2], axis=1)
-
-# Combine google trend (YoY)
-#gtrend_y = pd.concat([a1, a2], axis=1).rename(columns={'var1': 'var1_rate', 'var2': 'var2_rate'})
-
 # Set time series dataset
-#gtrend_l = pd.concat(
-#  [data1.iloc[:,1].rename(columns = {"trend":"trend-1"}), 
-#  data2.iloc[:,1].rename(columns = {"trend":"trend-2"})], axis=1)
-#gtrend_y = pd.concat(
-#  [data1.iloc[:,2].rename(columns = {"variable_y":"variable-1"}), 
-#  data2.iloc[:,2].rename(columns = {"variable_y":"variable-2"})], axis=1)
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 y = ibc[228:]
 y = y.set_index('time')
