@@ -39,11 +39,11 @@ def google_trend(kw):
   gt = pytrends.interest_over_time()
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
 
-  # Extract trend factor
+  # Extract trend factor and YoY
   t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq').trend
-  t = pd.DataFrame(t).rename(columns = {"trend":f"{kw}-trend"})
+  #t = pd.DataFrame(t).rename(columns = {"trend":f"{kw}-trend"})
   a = gt.iloc[:,0].pct_change(12)
-  a = pd.DataFrame(a).rename(columns = {"variable":f"{kw}-YoY"})
+  #a = pd.DataFrame(a).rename(columns = {"variable":f"{kw}-YoY"})
   temp = pd.merge(gt.iloc[:,0], t, on='date')
   data = pd.merge(temp, a, on='date')
 
@@ -141,8 +141,12 @@ st.write("Correlation of YoY: {:.2f}".format(cor_ann2))
 #gtrend_y = pd.concat([a1, a2], axis=1).rename(columns={'var1': 'var1_rate', 'var2': 'var2_rate'})
 
 # Set time series dataset
-gtrend_l = pd.concat([data1.iloc[:,1], data2.iloc[:,1]], axis=1)
-gtrend_y = pd.concat([data1.iloc[:,2], data2.iloc[:,2]], axis=1)
+gtrend_l = pd.concat(
+  [data1.iloc[:,1].rename(columns = {"trend":"trend-1"}), 
+  data2.iloc[:,1]].rename(columns = {"trend":"trend-2"})], axis=1)
+gtrend_y = pd.concat(
+  [data1.iloc[:,2].rename(columns = {"variable":"variable-1"}), 
+  data2.iloc[:,2].rename(columns = {"variable":"variable-2"})], axis=1)
 X = pd.merge(gtrend_l, gtrend_y, on='date')
 y = ibc[228:]
 y = y.set_index('time')
