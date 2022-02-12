@@ -25,6 +25,36 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 
+# Import packages
+from pytrends.request import TrendReq
+plt.rcParams['font.family'] = 'IPAexGothic'
+
+# API Connection
+pytrends = TrendReq(hl='ja-JP', tz=360)
+
+def google_trend(kw):
+  #@st.cache
+  kw_list = [kw]
+  pytrends.build_payload(kw_list, timeframe='2004-01-01 2021-11-30', geo='JP')
+  gt = pytrends.interest_over_time()
+  gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
+
+  # Extract trend factor
+  t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq').trend
+  data = pd.merge(gt.iloc[:,0], t, on='date')
+
+  # Check correlation
+  level = ibc['Coincident Index'][228:]
+  level.index = t.index
+  cor_level = level.corr(t)
+
+  a = gt.iloc[:,0].pct_change(12)
+  ann = ibc['Coincident ann'][228:]
+  ann.index = a.index
+  cor_ann = ann.corr(a)
+
+  return data, cor_level, cor_ann
+
 def multivariate_data(dataset, target, start_index, end_index, 
                       history_size, target_size, step, single_step=False):
   data = []
@@ -78,46 +108,15 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
         finalmetricdata = pd.DataFrame.from_dict(metricdata)
      return finalmetricdata
 
-
-def google_trend(kw):
-  #@st.cache
-  kw_list = [kw]
-  pytrends.build_payload(kw_list, timeframe='2004-01-01 2021-11-30', geo='JP')
-  gt = pytrends.interest_over_time()
-  gt = gt.rename(columns = {kw:"var", "isPartial":"info"})
-
-  # Extract trend factor
-  t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq').trend
-  data = pd.merge(gt.iloc[:,0], t, on='date')
-
-  # Check correlation
-  level = ibc['Coincident Index'][228:]
-  level.index = t.index
-  cor_level = level.corr(t)
-
-  a = gt.iloc[:,0].pct_change(12)
-  ann = ibc['Coincident ann'][228:]
-  ann.index = a.index
-  cor_ann = ann.corr(a)
-
-  return data, cor_level, cor_ann
-
-# Import packages
-from pytrends.request import TrendReq
-plt.rcParams['font.family'] = 'IPAexGothic'
-
-# API Connection
-pytrends = TrendReq(hl='ja-JP', tz=360)
-
-st.title('景気ナウキャスティング')
-
 ibc = pd.read_csv('data/ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+
+
+st.title('景気ナウキャスティング')
 
 st.sidebar.write("""
 Googleトレンドによる景気予測ツールです。検索ワードを記入してください。
 """)
-
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 
