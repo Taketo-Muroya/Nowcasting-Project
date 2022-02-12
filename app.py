@@ -79,6 +79,18 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
      return finalmetricdata
 
 
+def google_trend(kw):
+  #@st.cache
+  kw_list = [kw]
+  pytrends.build_payload(kw_list, timeframe='2004-01-01 2021-11-30', geo='JP')
+  gt = pytrends.interest_over_time()
+  gt = gt.rename(columns = {kw:"var", "isPartial":"info"})
+
+  # Extract trend factor
+  t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq').trend
+  data = pd.merge(gt.iloc[:,0], t, on='date')
+  return data
+
 # Import packages
 from pytrends.request import TrendReq
 plt.rcParams['font.family'] = 'IPAexGothic'
@@ -102,17 +114,7 @@ st.write(f"""
 ### 「{kw1}」のグーグルトレンド
 """)
 
-# Set keyword ("失業" = "unemployment")
-#@st.cache
-kw_list1 = [kw1]
-pytrends.build_payload(kw_list1, timeframe='2004-01-01 2021-11-30', geo='JP')
-gt1 = pytrends.interest_over_time()
-gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
-
-# Extract trend factor
-t1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq').trend
-data1 = pd.merge(gt1.iloc[:,0], t1, on='date')
-st.line_chart(data1)
+st.line_chart(google_trend(kw1))
 
 # Check correlation
 level = ibc['Coincident Index'][228:]
@@ -127,20 +129,10 @@ cor = ann.corr(a1)
 st.write("Correlation of YoY: {:.2f}".format(cor))
 
 st.write(f"""
-### **「{kw2}」** のグーグルトレンド
+### 「{kw2}」のグーグルトレンド
 """)
 
-# Set keyword ("貯金" = "saving")
-#@st.cache
-kw_list2 = [kw2]
-pytrends.build_payload(kw_list2, timeframe='2004-01-01 2021-11-30', geo='JP')
-gt2 = pytrends.interest_over_time()
-gt2 = gt2.rename(columns = {kw2:"var2", "isPartial":"info"})
-
-# Extract trend factor
-t2 = seasonal_decompose(gt2.iloc[:,0], extrapolate_trend='freq').trend
-data2 = pd.merge(gt2.iloc[:,0], t2, on='date')
-st.line_chart(data2)
+st.line_chart(google_trend(kw2))
 
 # Check correlation
 level = ibc['Coincident Index'][228:]
