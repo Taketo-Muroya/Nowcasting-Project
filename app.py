@@ -111,7 +111,6 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
 ibc = pd.read_csv('data/ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 
-
 st.title('景気ナウキャスティング')
 
 st.sidebar.write("""Googleトレンドによる景気予測ツールです。検索ワードを記入してください。""")
