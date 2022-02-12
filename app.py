@@ -111,7 +111,6 @@ kw_list1 = [kw1]
 pytrends.build_payload(kw_list1, timeframe='2004-01-01 2021-11-30', geo='JP')
 gt1 = pytrends.interest_over_time()
 
-st.table(gt1.tail(10))
 st.line_chart(gt1.iloc[:,0])
 gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
 #gt1.to_csv("gt1.csv")
@@ -120,7 +119,8 @@ gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
 
 # Extract trend factor
 t1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq').trend
-st.line_chart(t1)
+data1 = pd.merge(gt1.iloc[:,0], t1, on='date')
+st.line_chart(data1)
 #plt.plot(t1)
 #plt.plot(gt1.iloc[:,0], linestyle='--')
 
@@ -151,7 +151,6 @@ gt2 = gt2.rename(columns = {kw2:"var2", "isPartial":"info"})
 #gt2.to_csv("data/gt2.csv")
 #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
 #gt2 = pd.read_csv('data/gt2.csv', index_col=0, date_parser=dateparse, dtype='float')
-st.table(gt2.tail(10))
 st.line_chart(gt2.iloc[:,0])
 
 # Extract trend factor
