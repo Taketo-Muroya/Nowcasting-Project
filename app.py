@@ -141,13 +141,13 @@ st.write("Correlation of YoY: {:.2f}".format(cor_ann2))
 #gtrend_y = pd.concat([a1, a2], axis=1).rename(columns={'var1': 'var1_rate', 'var2': 'var2_rate'})
 
 # Set time series dataset
-gtrend_l = pd.concat(
-  [data1.iloc[:,1].rename({"trend":"trend-1"}), 
-  data2.iloc[:,1].rename({"trend":"trend-2"})], axis=1)
-gtrend_y = pd.concat(
-  [data1.iloc[:,2].rename(columns = {"variable_y":"variable-1"}), 
-  data2.iloc[:,2].rename(columns = {"variable_y":"variable-2"})], axis=1)
-X = pd.merge(gtrend_l, gtrend_y, on='date')
+#gtrend_l = pd.concat(
+#  [data1.iloc[:,1].rename(columns = {"trend":"trend-1"}), 
+#  data2.iloc[:,1].rename(columns = {"trend":"trend-2"})], axis=1)
+#gtrend_y = pd.concat(
+#  [data1.iloc[:,2].rename(columns = {"variable_y":"variable-1"}), 
+#  data2.iloc[:,2].rename(columns = {"variable_y":"variable-2"})], axis=1)
+X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 y = ibc[228:]
 y = y.set_index('time')
 y.index = X.index
