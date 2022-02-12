@@ -41,9 +41,9 @@ def google_trend(kw):
 
   # Extract trend factor
   t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq').trend
-  t = pd.DataFrame(t).rename(columns = {"trend":kw})
+  t = pd.DataFrame(t).rename(columns = {"trend":f"{kw}-trend"})
   a = gt.iloc[:,0].pct_change(12)
-  #a = pd.DataFrame(a).rename(columns = {kw:"YoY"})
+  a = pd.DataFrame(a).rename(columns = {"variable":f"{kw}-YoY"})
   temp = pd.merge(gt.iloc[:,0], t, on='date')
   data = pd.merge(temp, a, on='date')
 
