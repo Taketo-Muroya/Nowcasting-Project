@@ -129,19 +129,10 @@ st.write("Correlation of YoY: {:.2f}".format(cor_ann1))
 
 st.write(f"""### 「{kw2}」のグーグルトレンド""")
 
-st.line_chart(google_trend(kw2))
-
-# Check correlation
-level = ibc['Coincident Index'][228:]
-level.index = t2.index
-cor = level.corr(t2)
-st.write("Correlation of level: {:.2f}".format(cor))
-
-a2 = gt2.iloc[:,0].pct_change(12)
-ann = ibc['Coincident ann'][228:]
-ann.index = a2.index
-cor = ann.corr(a2)
-st.write("Correlation of YoY: {:.2f}".format(cor))
+data2, cor_level2, cor_ann2 = google_trend(kw2)
+st.line_chart(data2)
+st.write("Correlation of level: {:.2f}".format(cor_level2))
+st.write("Correlation of YoY: {:.2f}".format(cor_ann2))
 
 # Combine google trend (level)
 t1 = pd.DataFrame(t1).rename(columns = {"trend":"trend-1"})
