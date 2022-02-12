@@ -25,7 +25,6 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 
-# Import packages
 from pytrends.request import TrendReq
 plt.rcParams['font.family'] = 'IPAexGothic'
 
