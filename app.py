@@ -124,7 +124,7 @@ kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯�
 st.write(f"""### 「{kw1}」のグーグルトレンド""")
 
 data1, cor_level1, cor_ann1 = google_trend(kw1)
-st.line_chart(google_trend(kw1))
+st.line_chart(data1)
 st.write("Correlation of level: {:.2f}".format(cor_level1))
 st.write("Correlation of YoY: {:.2f}".format(cor_ann1))
 
