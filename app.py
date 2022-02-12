@@ -92,7 +92,7 @@ ibc = pd.read_csv('data/ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 
 st.sidebar.write("""
-こちらはGoogleトレンドによる景気予測ツールです。検索ワードを記入してください。
+Googleトレンドによる景気予測ツールです。検索ワードを記入してください。
 """)
 
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
