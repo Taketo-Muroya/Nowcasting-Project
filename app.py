@@ -92,7 +92,7 @@ def google_trend(kw):
 
   # Check correlation
   level = ibc['Coincident Index'][228:]
-  level.index = data.index
+  level.index = t.index
   cor_level = level.corr(t)
 
   a = gt.iloc[:,0].pct_change(12)
