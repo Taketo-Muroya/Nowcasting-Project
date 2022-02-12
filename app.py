@@ -89,7 +89,18 @@ def google_trend(kw):
   # Extract trend factor
   t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq').trend
   data = pd.merge(gt.iloc[:,0], t, on='date')
-  return data
+
+  # Check correlation
+  level = ibc['Coincident Index'][228:]
+  level.index = data.index
+  cor_level = level.corr(t)
+
+  a = gt.iloc[:,0].pct_change(12)
+  ann = ibc['Coincident ann'][228:]
+  ann.index = a.index
+  cor_ann = ann.corr(a)
+
+  return data, cor_level, cor_ann
 
 # Import packages
 from pytrends.request import TrendReq
@@ -110,27 +121,14 @@ Googleトレンドによる景気予測ツールです。検索ワードを記�
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 
-st.write(f"""
-### 「{kw1}」のグーグルトレンド
-""")
+st.write(f"""### 「{kw1}」のグーグルトレンド""")
 
+data1, cor_level1, cor_ann1 = google_trend(kw1)
 st.line_chart(google_trend(kw1))
+st.write("Correlation of level: {:.2f}".format(cor_level1))
+st.write("Correlation of YoY: {:.2f}".format(cor_ann1))
 
-# Check correlation
-level = ibc['Coincident Index'][228:]
-level.index = t1.index
-cor = level.corr(t1)
-st.write("Correlation of level: {:.2f}".format(cor))
-
-a1 = gt1.iloc[:,0].pct_change(12)
-ann = ibc['Coincident ann'][228:]
-ann.index = a1.index
-cor = ann.corr(a1)
-st.write("Correlation of YoY: {:.2f}".format(cor))
-
-st.write(f"""
-### 「{kw2}」のグーグルトレンド
-""")
+st.write(f"""### 「{kw2}」のグーグルトレンド""")
 
 st.line_chart(google_trend(kw2))
 
