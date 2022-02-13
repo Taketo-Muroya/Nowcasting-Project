@@ -56,61 +56,6 @@ def google_trend(kw):
 
   return data, cor_level, cor_ann
 
-def lstm_rnn(features):
-  # set training percentage
-  TRAIN_SPLIT = round(0.8*len(features))
-
-  # feature scaling
-  dataset = features.values
-  data_mean = dataset[:TRAIN_SPLIT].mean(axis=0)
-  data_std = dataset[:TRAIN_SPLIT].std(axis=0)
-  dataset = (dataset-data_mean)/data_std
-
-  # create the training and test data
-  past_history = 3
-  future_target = 0
-  STEP = 1
-
-  x_train_single, y_train_single = multivariate_data(dataset, dataset[:,0], 0, TRAIN_SPLIT, past_history, future_target, STEP, single_step=True)
-  x_val_single, y_val_single = multivariate_data(dataset, dataset[:,0], TRAIN_SPLIT, None, past_history, future_target, STEP, single_step=True)
-
-  BATCH_SIZE = 32
-  BUFFER_SIZE = 100
-
-  train_data_single = tf.data.Dataset.from_tensor_slices((x_train_single, y_train_single))
-  train_data_single = train_data_single.cache().shuffle(BUFFER_SIZE).batch(BATCH_SIZE).repeat()
-
-  val_data_single = tf.data.Dataset.from_tensor_slices((x_val_single, y_val_single))
-  val_data_single = val_data_single.batch(BATCH_SIZE).repeat()
-
-  # construct the model
-  single_step_model = tf.keras.models.Sequential()
-  single_step_model.add(tf.keras.layers.LSTM(8, input_shape=x_train_single.shape[-2:]))
-  #single_step_model.add(tf.keras.layers.LSTM(8, kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
-  #single_step_model.add(tf.keras.layers.LSTM(8, dropout=0.2, recurrent_dropout=0.2, return_sequences=True))
-  #single_step_model.add(tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(4)))
-  single_step_model.add(tf.keras.layers.Dense(1))
-
-  single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
-
-  # train the model
-  single_step_history = single_step_model.fit(train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50)
-
-  # evaluate the model
-  model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
-
-  # visualize the result
-  predict = pd.DataFrame(single_step_model.predict(x_val_single)*data_std[0]+data_mean[0])
-  predict.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
-
-  actual = pd.DataFrame(y_val_single*data_std[0]+data_mean[0])
-  actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
-
-  output = pd.merge(predict, actual, on='date')
-  test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
-
-  return output, test_score, single_step_model
-
 def weekly_google_trend(kw):
   # Get the weekly google trend data (unemployment)
   kw_list = [kw]
@@ -180,6 +125,61 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
         finalmetricdata = pd.DataFrame.from_dict(metricdata)
      return finalmetricdata
 
+def lstm_rnn(features):
+  # set training percentage
+  TRAIN_SPLIT = round(0.8*len(features))
+
+  # feature scaling
+  dataset = features.values
+  data_mean = dataset[:TRAIN_SPLIT].mean(axis=0)
+  data_std = dataset[:TRAIN_SPLIT].std(axis=0)
+  dataset = (dataset-data_mean)/data_std
+
+  # create the training and test data
+  past_history = 3
+  future_target = 0
+  STEP = 1
+
+  x_train_single, y_train_single = multivariate_data(dataset, dataset[:,0], 0, TRAIN_SPLIT, past_history, future_target, STEP, single_step=True)
+  x_val_single, y_val_single = multivariate_data(dataset, dataset[:,0], TRAIN_SPLIT, None, past_history, future_target, STEP, single_step=True)
+
+  BATCH_SIZE = 32
+  BUFFER_SIZE = 100
+
+  train_data_single = tf.data.Dataset.from_tensor_slices((x_train_single, y_train_single))
+  train_data_single = train_data_single.cache().shuffle(BUFFER_SIZE).batch(BATCH_SIZE).repeat()
+
+  val_data_single = tf.data.Dataset.from_tensor_slices((x_val_single, y_val_single))
+  val_data_single = val_data_single.batch(BATCH_SIZE).repeat()
+
+  # construct the model
+  single_step_model = tf.keras.models.Sequential()
+  single_step_model.add(tf.keras.layers.LSTM(8, input_shape=x_train_single.shape[-2:]))
+  #single_step_model.add(tf.keras.layers.LSTM(8, kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+  #single_step_model.add(tf.keras.layers.LSTM(8, dropout=0.2, recurrent_dropout=0.2, return_sequences=True))
+  #single_step_model.add(tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(4)))
+  single_step_model.add(tf.keras.layers.Dense(1))
+
+  single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
+
+  # train the model
+  single_step_history = single_step_model.fit(train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50)
+
+  # evaluate the model
+  model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
+
+  # visualize the result
+  predict = pd.DataFrame(single_step_model.predict(x_val_single)*data_std[0]+data_mean[0])
+  predict.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
+
+  actual = pd.DataFrame(y_val_single*data_std[0]+data_mean[0])
+  actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
+
+  output = pd.merge(predict, actual, on='date')
+  test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
+
+  return output, test_score, single_step_model
+
 def nowcasting(XX):
 
   # feature scaling
@@ -200,7 +200,7 @@ def nowcasting(XX):
   past_estimate.index = XX.iloc[past_history:END,:].index
 
   # visualize the result 
-  st.line_chart(past_estimate)
+  #st.line_chart(past_estimate)
 
   # nowcast the future IBC
   for i in range(END, len(XX)):
@@ -231,8 +231,11 @@ def nowcasting(XX):
 
   return df_concat
 
+# load the IBC data
 ibc = pd.read_csv('data/ibc_new.csv')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
 
 st.title('景気ナウキャスティング')
 
@@ -265,7 +268,8 @@ st.dataframe(ts)
 if st.button('推計開始'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
-
+  
+  # Estimation
   output, test_score, single_step_model = lstm_rnn(ts)
   st.line_chart(output)
   st.write("Test set score: {:.2f}".format(test_score))
@@ -275,10 +279,6 @@ if st.button('推計開始'):
   st.line_chart(df1.iloc[:,0:2])
   df2 = weekly_google_trend(kw2)
   st.line_chart(df2.iloc[:,0:2])
-
-  # load the weekly ibc data
-  dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-  wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
 
   # merge google trend with ibc data
   temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
