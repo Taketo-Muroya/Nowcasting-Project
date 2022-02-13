@@ -110,7 +110,7 @@ def lstm_rnn(y, X):
   actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
 
   output = pd.merge(predict, actual, on='date')
-  test_score = r2_score(y_val_single, single_step_model.predict(x_val_single)))
+  test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
 
   return output, test_score
 
