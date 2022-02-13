@@ -215,6 +215,7 @@ if st.button('推計開始'):
   comment.write('Googleトレンドによる推計を実行しています')
 
   features = pd.concat(ts['Coincident Index'], ts.iloc[:,2:4], axis=1)
+  st.dataframe(features)
   output, test_score = lstm_rnn(features)
   st.line_chart(output)
   st.write("Test set score: {:.2f}".format(test_score))
