@@ -56,9 +56,9 @@ def google_trend(kw):
 
   return data, cor_level, cor_ann
 
-def lstm_rnn(y, X):
+def lstm_rnn(ts):
   # set the dataset
-  features = pd.concat(y, X, axis=1)
+  features = pd.concat(ts['Coincident Index'], ts.iloc[:,2:4], axis=1)
 
   # set training percentage
   TRAIN_SPLIT = round(0.8*len(features))
@@ -217,7 +217,7 @@ if st.button('推計開始'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
 
-  output, test_score = lstm_rnn(ts['Coincident Index'], ts.iloc[:,2:4])
+  output, test_score = lstm_rnn(ts)
   st.line_chart(output)
   st.write("Test set score: {:.2f}".format(test_score))
 
