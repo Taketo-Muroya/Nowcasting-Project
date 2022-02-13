@@ -207,7 +207,7 @@ y = ibc[228:]
 y = y.set_index('time')
 y.index = X.index
 ts = pd.merge(y, X, on='date')
-ts = ts.drop('Coincident Index', axis=1)
+ts = ts.drop('Coincident ann', axis=1)
 
 st.dataframe(ts)
 
