@@ -113,7 +113,6 @@ def lstm_rnn(y, X):
   test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
 
   return output, test_score
-  
 
 def weekly_google_trend(kw):
   # Get the weekly google trend data (unemployment)
@@ -221,7 +220,7 @@ if st.button('推計開始'):
 
   output, test_score = lstm_rnn(ts['Coincident Index'], ts.iloc[:,2:4])
   st.line_chart(output)
-  st.write("Test set score: {:.2f}".format(test_score)
+  st.write("Test set score: {:.2f}".format(test_score))
 
   # Get the weekly google trend data
   data1 = weekly_google_trend(kw1)
