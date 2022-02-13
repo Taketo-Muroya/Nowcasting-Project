@@ -251,8 +251,8 @@ chart = (
     alt.Chart(data1.iloc[:,0:2])
     .mark_line(opacity=0.8, clip=True)
     .encode(
-        x="Date:T",
-        y=alt.Y("Stock Prices(USD):Q", stack=None, scale=alt.Scale(domain=[0, 100])),
+        x="date:T",
+        y=alt.Y("trend:Q", stack=None, scale=alt.Scale(domain=[0, 100])),
         color='Name:N'
     )
 )
