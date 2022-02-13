@@ -220,19 +220,18 @@ if st.button('推計開始'):
   st.write("Test set score: {:.2f}".format(test_score))
 
   # Get the weekly google trend data
-  data1 = weekly_google_trend(kw1)
-  st.line_chart(data1.iloc[:,0:2])
-  data2 = weekly_google_trend(kw2)
-  st.line_chart(data2.iloc[:,0:2])
+  df1 = weekly_google_trend(kw1)
+  st.line_chart(df1.iloc[:,0:2])
+  df2 = weekly_google_trend(kw2)
+  st.line_chart(df2.iloc[:,0:2])
 
   # load the weekly ibc data
   dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
   wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
 
   # merge google trend with ibc data
-  temp = pd.merge(t3, t4, on='date')
+  temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
   XX = pd.merge(wibc, temp, on='date')
-  st.table(XX.tail(10))
 
   # feature scaling
   END = len(XX)-XX['ibc'].isnull().sum()
