@@ -109,7 +109,7 @@ def lstm_rnn(features):
   output = pd.merge(predict, actual, on='date')
   test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
 
-  return output, test_score
+  return output, test_score, single_step_model
 
 def weekly_google_trend(kw):
   # Get the weekly google trend data (unemployment)
@@ -215,7 +215,7 @@ if st.button('推計開始'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
 
-  output, test_score = lstm_rnn(ts)
+  output, test_score, single_step_model = lstm_rnn(ts)
   st.line_chart(output)
   st.write("Test set score: {:.2f}".format(test_score))
 
