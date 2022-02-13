@@ -203,10 +203,11 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 # Set time series dataset
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
-y = pd.DataFrame(ibc['Coincident Index'][228:])
+y = ibc[228:]
 y = y.set_index('time')
 y.index = X.index
 ts = pd.merge(y, X, on='date')
+ts = ts.drop('Coincident Index', axis=1)
 
 st.dataframe(ts)
 
