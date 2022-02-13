@@ -203,7 +203,7 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 # Set time series dataset
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
-y = ibc[228:]
+y = ibc['Coincident Index'][228:]
 y = y.set_index('time')
 y.index = X.index
 ts = pd.merge(y, X, on='date')
@@ -214,9 +214,7 @@ if st.button('推計開始'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
 
-  features = pd.concat(ts['Coincident Index'], ts.iloc[:,2:4], axis=1)
-  st.dataframe(features)
-  output, test_score = lstm_rnn(features)
+  output, test_score = lstm_rnn(ts)
   st.line_chart(output)
   st.write("Test set score: {:.2f}".format(test_score))
 
