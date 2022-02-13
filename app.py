@@ -241,6 +241,9 @@ if st.button('推計開始'):
   dataset = (dataset-data_mean)/data_std
 
   # create the test data
+  past_history = 3
+  future_target = 0
+  STEP = 1
   x_single, y_single = multivariate_data(dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
   # save the output
