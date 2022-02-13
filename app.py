@@ -283,23 +283,21 @@ if st.button('推計開始'):
   
   comment.write('推計が完了しました')
   
-  if st.button('ナウキャスティング'):
-    comment = st.empty()
-    comment.write('ナウキャスティング実施中')
+if st.button('ナウキャスティング'):
+  comment = st.empty()
+  comment.write('ナウキャスティング実施中')
 
-    # Get the weekly google trend data
-    df1 = weekly_google_trend(kw1)
-    st.line_chart(df1.iloc[:,0:2])
-    df2 = weekly_google_trend(kw2)
-    st.line_chart(df2.iloc[:,0:2])
+  # Get the weekly google trend data
+  df1 = weekly_google_trend(kw1)
+  st.line_chart(df1.iloc[:,0:2])
+  df2 = weekly_google_trend(kw2)
+  st.line_chart(df2.iloc[:,0:2])
 
-    # merge google trend with ibc data
-    temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
-    XX = pd.merge(wibc, temp, on='date')
+  # merge google trend with ibc data
+  temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
+  XX = pd.merge(wibc, temp, on='date')
 
-    result = nowcasting(XX)
-    st.line_chart(result)
+  result = nowcasting(XX)
+  st.line_chart(result)
 
-    comment.write('ナウキャスティングが完了しました')
-
-
+  comment.write('ナウキャスティングが完了しました')
