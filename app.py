@@ -140,8 +140,12 @@ def lstm_rnn(features):
   future_target = 0
   STEP = 1
 
-  x_train_single, y_train_single = multivariate_data(dataset, dataset[:,0], 0, TRAIN_SPLIT, past_history, future_target, STEP, single_step=True)
-  x_val_single, y_val_single = multivariate_data(dataset, dataset[:,0], TRAIN_SPLIT, None, past_history, future_target, STEP, single_step=True)
+  x_train_single, y_train_single = multivariate_data(
+    dataset, dataset[:,0], 0, TRAIN_SPLIT, past_history, future_target, STEP, single_step=True
+    )
+  x_val_single, y_val_single = multivariate_data(
+    dataset, dataset[:,0], TRAIN_SPLIT, None, past_history, future_target, STEP, single_step=True
+    )
 
   BATCH_SIZE = 32
   BUFFER_SIZE = 100
@@ -163,7 +167,9 @@ def lstm_rnn(features):
   single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
 
   # train the model
-  single_step_history = single_step_model.fit(train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50)
+  single_step_history = single_step_model.fit(
+    train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
+    )
 
   # evaluate the model
   model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
@@ -193,7 +199,8 @@ def nowcasting(XX):
   past_history = 3
   future_target = 0
   STEP = 1
-  x_single, y_single = multivariate_data(dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
+  x_single, y_single = multivariate_data(
+    dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
   # save the output
   past_estimate = pd.DataFrame(single_step_model.predict(x_single)*data_std[0]+data_mean[0])
@@ -217,7 +224,8 @@ def nowcasting(XX):
     dataset = (dataset-data_mean)/data_std
     
     # create the test data
-    x_single, y_single = multivariate_data(dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
+    x_single, y_single = multivariate_data(
+      dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
     st.write(XX.tail(10))
@@ -226,7 +234,6 @@ def nowcasting(XX):
   # save the output
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
 
-  #plt.plot(single_step_model.predict(x_single)*data_std[0]+data_mean[0], "r", linestyle='--', label="predict")
   df_concat = pd.concat([past_estimate.set_axis(['ibc'], axis='columns'), future_estimate])
 
   return df_concat
@@ -273,18 +280,26 @@ if st.button('推計開始'):
   output, test_score, single_step_model = lstm_rnn(ts)
   st.line_chart(output)
   st.write("Test set score: {:.2f}".format(test_score))
-
-  # Get the weekly google trend data
-  df1 = weekly_google_trend(kw1)
-  st.line_chart(df1.iloc[:,0:2])
-  df2 = weekly_google_trend(kw2)
-  st.line_chart(df2.iloc[:,0:2])
-
-  # merge google trend with ibc data
-  temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
-  XX = pd.merge(wibc, temp, on='date')
-
-  result = nowcasting(XX)
-  st.line_chart(result)
-
+  
   comment.write('推計が完了しました')
+  
+  if st.button('ナウキャスティング'):
+    comment = st.empty()
+    comment.write('ナウキャスティング実施中')
+
+    # Get the weekly google trend data
+    df1 = weekly_google_trend(kw1)
+    st.line_chart(df1.iloc[:,0:2])
+    df2 = weekly_google_trend(kw2)
+    st.line_chart(df2.iloc[:,0:2])
+
+    # merge google trend with ibc data
+    temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
+    XX = pd.merge(wibc, temp, on='date')
+
+    result = nowcasting(XX)
+    st.line_chart(result)
+
+    comment.write('ナウキャスティングが完了しました')
+
+
