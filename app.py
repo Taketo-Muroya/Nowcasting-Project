@@ -124,9 +124,8 @@ def weekly_google_trend(kw):
  
   # Extract trend factor
   s = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq')
-  #s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend='freq')
+  #s = seasonal_decompose(gt.iloc[:,0], freq=6, extrapolate_trend='freq')
   t = s.trend
-
   data = pd.merge(gt.iloc[:,0], t, on='date')
 
   return data
