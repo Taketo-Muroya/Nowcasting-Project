@@ -113,6 +113,24 @@ def lstm_rnn(y, X):
   test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
 
   return output, test_score
+  
+
+def weekly_google_trend(kw):
+  # Get the weekly google trend data (unemployment)
+  kw_list = [kw]
+  pytrends.build_payload(kw_list, timeframe='today 5-y', geo='JP')
+  #pytrends.build_payload(kw_list, timeframe='2017-01-01 2021-01-16', geo='JP')
+  gt = pytrends.interest_over_time()
+  gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
+ 
+  # Extract trend factor
+  s = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq')
+  #s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend='freq')
+  t = s.trend
+
+  data = pd.merge(gt.iloc[:,0], t, on='date')
+
+  return data
 
 def multivariate_data(dataset, target, start_index, end_index, 
                       history_size, target_size, step, single_step=False):
@@ -205,44 +223,11 @@ if st.button('推計開始'):
   st.line_chart(output)
   st.write("Test set score: {:.2f}".format(test_score)
 
-  # Get the weekly google trend data (unemployment)
-  pytrends.build_payload(kw_list1, timeframe='today 5-y', geo='JP')
-  #pytrends.build_payload(kw_list, timeframe='2017-01-01 2021-01-16', geo='JP')
-  gt3 = pytrends.interest_over_time()
-  gt3 = gt3.rename(columns = {kw1:"var1", "isPartial":"info"})
-  #gt3.to_csv("data/gt3.csv")
-  #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-  #gt3 = pd.read_csv('data/gt3.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-  # Extract trend factor
-  s3 = seasonal_decompose(gt3.iloc[:,0], extrapolate_trend='freq')
-  #s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend='freq')
-  t3 = s3.trend
-  #gtw_u = pd.DataFrame(t3)
-  #gtw_u.to_csv("data/gtw_u.csv")
-
-  st.line_chart(t3)
-  st.line_chart(gt3.iloc[:,0])
-
-
-  # Get the weekly google trend data (saving)
-  pytrends.build_payload(kw_list2, timeframe='today 5-y', geo='JP')
-  #pytrends.build_payload(kw_list, timeframe='2004-01-01 2020-02-29', geo='JP')
-  gt4 = pytrends.interest_over_time()
-  gt4 = gt4.rename(columns = {kw2: "var2", "isPartial": "info"})
-  #gt4.to_csv("data/gt4.csv")
-  #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-  #gt4 = pd.read_csv('data/gt4.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-  # Extract trend factor
-  s4 = seasonal_decompose(gt4.iloc[:,0], extrapolate_trend='freq')
-  #s4 = seasonal_decompose(gt4.iloc[:,0], freq=24, extrapolate_trend='freq')
-  t4 = s4.trend
-  #gtw_s = pd.DataFrame(t4)
-  #gtw_s.to_csv("data/gtw_s.csv")
-
-  st.line_chart(t4)
-  st.line_chart(gt4.iloc[:,0])
+  # Get the weekly google trend data
+  data1 = weekly_google_trend(kw1)
+  st.line_chart(data1.iloc[:,0:2])
+  data2 = weekly_google_trend(kw2)
+  st.line_chart(data2.iloc[:,0:2])
 
   # load the weekly ibc data
   dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
