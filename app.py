@@ -245,19 +245,7 @@ kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯�
 
 st.write(f"""### 「{kw1}」のグーグルトレンド""")
 data1, cor_level1, cor_ann1 = google_trend(kw1)
-#st.line_chart(data1.iloc[:,0:2])
-
-chart = (
-    alt.Chart(data1.iloc[:,0:2])
-    .mark_line(opacity=0.8, clip=True)
-    .encode(
-        x="date:T",
-        y=alt.Y("trend:Q", stack=None, scale=alt.Scale(domain=[0, 100])),
-        color='Name:N'
-    )
-)
-st.altair_chart(chart, use_container_width=True)
-
+st.line_chart(data1.iloc[:,0:2])
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
