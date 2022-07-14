@@ -25,6 +25,53 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 
+from pytrends.request import TrendReq
+plt.rcParams['font.family'] = 'IPAexGothic'
+
+# API Connection
+pytrends = TrendReq(hl='ja-JP', tz=360)
+
+def google_trend(kw):
+  #@st.cache
+  kw_list = [kw]
+  pytrends.build_payload(kw_list, timeframe='2004-01-01 2021-11-30', geo='JP')
+  gt = pytrends.interest_over_time()
+  gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
+
+  # Extract trend factor and YoY
+  t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq').trend
+  #t = pd.DataFrame(t).rename(columns = {"trend":f"{kw}-trend"})
+  a = gt.iloc[:,0].pct_change(12)
+  #a = pd.DataFrame(a).rename(columns = {"variable":f"{kw}-YoY"})
+  temp = pd.merge(gt.iloc[:,0], t, on='date')
+  data = pd.merge(temp, a, on='date')
+
+  # Check correlation
+  level = ibc['Coincident Index'][228:]
+  level.index = t.index
+  cor_level = level.corr(t)
+  ann = ibc['Coincident ann'][228:]
+  ann.index = a.index
+  cor_ann = ann.corr(a)
+
+  return data, cor_level, cor_ann
+
+def weekly_google_trend(kw):
+  # Get the weekly google trend data (unemployment)
+  kw_list = [kw]
+  pytrends.build_payload(kw_list, timeframe='today 5-y', geo='JP')
+  #pytrends.build_payload(kw_list, timeframe='2017-01-01 2021-01-16', geo='JP')
+  gt = pytrends.interest_over_time()
+  gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
+ 
+  # Extract trend factor
+  s = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq')
+  #s = seasonal_decompose(gt.iloc[:,0], freq=6, extrapolate_trend='freq')
+  t = s.trend
+  data = pd.merge(gt.iloc[:,0], t, on='date')
+
+  return data
+
 def multivariate_data(dataset, target, start_index, end_index, 
                       history_size, target_size, step, single_step=False):
   data = []
@@ -78,126 +125,9 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
         finalmetricdata = pd.DataFrame.from_dict(metricdata)
      return finalmetricdata
 
-
-# Import packages
-from pytrends.request import TrendReq
-plt.rcParams['font.family'] = 'IPAexGothic'
-
-# API Connection
-pytrends = TrendReq(hl='ja-JP', tz=360)
-
-st.title('景気ナウキャスティング')
-
-ibc = pd.read_csv('data/ibc_new.csv')
-ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
-#st.table(ibc.tail(10))
-#st.line_chart(ibc['Coincident Index'])
-
-#st.sidebar.write("""
-## GAFA株価
-#こちらは株価可視化ツールです。以下のオプションから表示日数を指定できます。
-#""")
-
-kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
-kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
-
-st.write(f"""
-### **「{kw1}」** のグーグルトレンド
-""")
-
-# Set keyword ("失業" = "unemployment")
-#@st.cache
-kw_list1 = [kw1]
-pytrends.build_payload(kw_list1, timeframe='2004-01-01 2021-11-30', geo='JP')
-gt1 = pytrends.interest_over_time()
-
-st.table(gt1.tail(10))
-st.line_chart(gt1.iloc[:,0])
-gt1 = gt1.rename(columns = {kw1:"var1", "isPartial":"info"})
-#gt1.to_csv("gt1.csv")
-#dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-#gt1 = pd.read_csv('gt1.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-# Extract trend factor
-t1 = seasonal_decompose(gt1.iloc[:,0], extrapolate_trend='freq').trend
-st.line_chart(t1)
-#plt.plot(t1)
-#plt.plot(gt1.iloc[:,0], linestyle='--')
-
-# Check correlation
-level = ibc['Coincident Index'][228:]
-level.index = t1.index
-cor = level.corr(t1)
-st.write("Correlation of level: {:.2f}".format(cor))
-#print("Correlation of level: {:.2f}".format(cor))
-
-a1 = gt1.iloc[:,0].pct_change(12)
-ann = ibc['Coincident ann'][228:]
-ann.index = a1.index
-cor = ann.corr(a1)
-st.write("Correlation of YoY: {:.2f}".format(cor))
-#print("Correlation of YoY: {:.2f}".format(cor))
-
-st.write(f"""
-### **「{kw2}」** のグーグルトレンド
-""")
-
-# Set keyword ("貯金" = "saving")
-#@st.cache
-kw_list2 = [kw2]
-pytrends.build_payload(kw_list2, timeframe='2004-01-01 2021-11-30', geo='JP')
-gt2 = pytrends.interest_over_time()
-gt2 = gt2.rename(columns = {kw2:"var2", "isPartial":"info"})
-#gt2.to_csv("data/gt2.csv")
-#dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-#gt2 = pd.read_csv('data/gt2.csv', index_col=0, date_parser=dateparse, dtype='float')
-st.table(gt2.tail(10))
-st.line_chart(gt2.iloc[:,0])
-
-# Extract trend factor
-t2 = seasonal_decompose(gt2.iloc[:,0], extrapolate_trend='freq').trend
-st.line_chart(t2)
-#plt.plot(t2)
-#plt.plot(gt2.iloc[:,0], linestyle='--')
-
-# Check correlation
-level = ibc['Coincident Index'][228:]
-level.index = t2.index
-cor = level.corr(t2)
-st.write("Correlation of level: {:.2f}".format(cor))
-
-a2 = gt2.iloc[:,0].pct_change(12)
-ann = ibc['Coincident ann'][228:]
-ann.index = a2.index
-cor = ann.corr(a2)
-st.write("Correlation of YoY: {:.2f}".format(cor))
-
-# Combine google trend (level)
-t1 = pd.DataFrame(t1).rename(columns = {"trend":"trend-1"})
-t2 = pd.DataFrame(t2).rename(columns = {"trend":"trend-2"})
-gtrend_l = pd.concat([t1, t2], axis=1)
-
-# Combine google trend (YoY)
-gtrend_y = pd.concat([a1, a2], axis=1).rename(columns={'var1': 'var1_rate', 'var2': 'var2_rate'})
-
-# Set time series dataset
-X = pd.merge(gtrend_l, gtrend_y, on='date')
-y = ibc[228:]
-y = y.set_index('time')
-y.index = X.index
-ts = pd.merge(y, X, on='date')
-
-st.dataframe(ts)
-
-if st.button('Estimation'):
-
-  # set the dataset
-  features = pd.concat([ts['Coincident Index'], ts.iloc[:,2:4]], axis=1)
-  #features.tail()
-
+def lstm_rnn(features):
   # set training percentage
   TRAIN_SPLIT = round(0.8*len(features))
-  #print(TRAIN_SPLIT)
 
   # feature scaling
   dataset = features.values
@@ -210,8 +140,12 @@ if st.button('Estimation'):
   future_target = 0
   STEP = 1
 
-  x_train_single, y_train_single = multivariate_data(dataset, dataset[:,0], 0, TRAIN_SPLIT, past_history, future_target, STEP, single_step=True)
-  x_val_single, y_val_single = multivariate_data(dataset, dataset[:,0], TRAIN_SPLIT, None, past_history, future_target, STEP, single_step=True)
+  x_train_single, y_train_single = multivariate_data(
+    dataset, dataset[:,0], 0, TRAIN_SPLIT, past_history, future_target, STEP, single_step=True
+    )
+  x_val_single, y_val_single = multivariate_data(
+    dataset, dataset[:,0], TRAIN_SPLIT, None, past_history, future_target, STEP, single_step=True
+    )
 
   BATCH_SIZE = 32
   BUFFER_SIZE = 100
@@ -233,7 +167,9 @@ if st.button('Estimation'):
   single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
 
   # train the model
-  single_step_history = single_step_model.fit(train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50)
+  single_step_history = single_step_model.fit(
+    train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
+    )
 
   # evaluate the model
   model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
@@ -245,63 +181,12 @@ if st.button('Estimation'):
   actual = pd.DataFrame(y_val_single*data_std[0]+data_mean[0])
   actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
 
-  st.line_chart(predict)
-  st.line_chart(actual)
+  output = pd.merge(predict, actual, on='date')
+  test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
 
-  #plt.plot(features.iloc[TRAIN_SPLIT+past_history:,0], label="actual")
-  #plt.plot(predict, "r", linestyle='--', label="predict")
-  #plt.legend(loc='best')
-  #plt.title('RNN-LSTM: Level')
-  #plt.savefig("images/google_lstm.png")
+  return output, test_score, single_step_model
 
-  st.write("Test set score: {:.2f}".format(r2_score(y_val_single, single_step_model.predict(x_val_single))))
-
-
-  # Get the weekly google trend data (unemployment)
-  pytrends.build_payload(kw_list1, timeframe='today 5-y', geo='JP')
-  #pytrends.build_payload(kw_list, timeframe='2017-01-01 2021-01-16', geo='JP')
-  gt3 = pytrends.interest_over_time()
-  gt3 = gt3.rename(columns = {kw1:"var1", "isPartial":"info"})
-  #gt3.to_csv("data/gt3.csv")
-  #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-  #gt3 = pd.read_csv('data/gt3.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-  # Extract trend factor
-  s3 = seasonal_decompose(gt3.iloc[:,0], freq=6, extrapolate_trend='freq')
-  t3 = s3.trend
-  #gtw_u = pd.DataFrame(t3)
-  #gtw_u.to_csv("data/gtw_u.csv")
-
-  st.line_chart(t3)
-  st.line_chart(gt3.iloc[:,0])
-
-
-  # Get the weekly google trend data (saving)
-  pytrends.build_payload(kw_list2, timeframe='today 5-y', geo='JP')
-  #pytrends.build_payload(kw_list, timeframe='2004-01-01 2020-02-29', geo='JP')
-  gt4 = pytrends.interest_over_time()
-  gt4 = gt4.rename(columns = {kw2: "var2", "isPartial": "info"})
-  #gt4.to_csv("data/gt4.csv")
-  #dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-  #gt4 = pd.read_csv('data/gt4.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-  # Extract trend factor
-  s4 = seasonal_decompose(gt4.iloc[:,0], freq=24, extrapolate_trend='freq')
-  t4 = s4.trend
-  #gtw_s = pd.DataFrame(t4)
-  #gtw_s.to_csv("data/gtw_s.csv")
-
-  st.line_chart(t4)
-  st.line_chart(gt4.iloc[:,0])
-
-  # load the weekly ibc data
-  dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-  wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
-
-  # merge google trend with ibc data
-  temp = pd.merge(t3, t4, on='date')
-  XX = pd.merge(wibc, temp, on='date')
-  st.table(XX.tail(10))
+def nowcasting(XX):
 
   # feature scaling
   END = len(XX)-XX['ibc'].isnull().sum()
@@ -311,14 +196,18 @@ if st.button('Estimation'):
   dataset = (dataset-data_mean)/data_std
 
   # create the test data
-  x_single, y_single = multivariate_data(dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
+  past_history = 3
+  future_target = 0
+  STEP = 1
+  x_single, y_single = multivariate_data(
+    dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
   # save the output
   past_estimate = pd.DataFrame(single_step_model.predict(x_single)*data_std[0]+data_mean[0])
   past_estimate.index = XX.iloc[past_history:END,:].index
 
   # visualize the result 
-  st.line_chart(past_estimate)
+  #st.line_chart(past_estimate)
 
   # nowcast the future IBC
   for i in range(END, len(XX)):
@@ -335,7 +224,8 @@ if st.button('Estimation'):
     dataset = (dataset-data_mean)/data_std
     
     # create the test data
-    x_single, y_single = multivariate_data(dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
+    x_single, y_single = multivariate_data(
+      dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
     st.write(XX.tail(10))
@@ -344,7 +234,64 @@ if st.button('Estimation'):
   # save the output
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
 
-  #plt.plot(single_step_model.predict(x_single)*data_std[0]+data_mean[0], "r", linestyle='--', label="predict")
   df_concat = pd.concat([past_estimate.set_axis(['ibc'], axis='columns'), future_estimate])
-  st.line_chart(df_concat)
 
+  return df_concat
+
+# load the IBC data
+ibc = pd.read_csv('data/ibc_new.csv')
+ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
+wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
+
+st.title('景気ナウキャスティング')
+
+st.sidebar.write("""Googleトレンドによる景気予測ツールです。検索ワードを記入してください。""")
+kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
+kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
+
+st.write(f"""### 「{kw1}」のグーグルトレンド""")
+data1, cor_level1, cor_ann1 = google_trend(kw1)
+st.line_chart(data1.iloc[:,0:2])
+st.write("水準の相関関数：{:.2f}".format(cor_level1))
+st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
+
+st.write(f"""### 「{kw2}」のグーグルトレンド""")
+data2, cor_level2, cor_ann2 = google_trend(kw2)
+st.line_chart(data2.iloc[:,0:2])
+st.write("水準の相関関数：{:.2f}".format(cor_level2))
+st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
+
+# Set time series dataset
+X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
+y = ibc[228:]
+y = y.set_index('time')
+y.index = X.index
+ts = pd.merge(y, X, on='date')
+ts = ts.drop('Coincident ann', axis=1)
+
+st.dataframe(ts)
+
+if st.button('推計開始'):
+  comment = st.empty()
+  comment.write('Googleトレンドによる推計を実行しています')
+  
+  # Estimation
+  output, test_score, single_step_model = lstm_rnn(ts)
+  st.line_chart(output)
+  st.write("Test set score: {:.2f}".format(test_score))
+  
+  # Get the weekly google trend data
+  df1 = weekly_google_trend(kw1)
+  st.line_chart(df1.iloc[:,0:2])
+  df2 = weekly_google_trend(kw2)
+  st.line_chart(df2.iloc[:,0:2])
+
+  # merge google trend with ibc data
+  temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
+  XX = pd.merge(wibc, temp, on='date')
+
+  result = nowcasting(XX)
+  st.line_chart(result)
+
+  comment.write('推計が完了しました')
