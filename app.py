@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -34,6 +35,23 @@ plt.rcParams['font.family'] = 'IPAexGothic'
 # API Connection
 pytrends = TrendReq(hl='ja-JP', tz=360)
 
+def get_ibc_data(url):
+  url_index = url + 'di.html'
+  res = requests.get(url_index)
+  soup = BeautifulSoup(res.text, 'html.parser')
+  name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
+  input_file_name = url + name
+  input_book = pd.ExcelFile(input_file_name)
+  input_sheet_name = input_book.sheet_names
+  input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
+  input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
+  input_sheet_df = input_sheet_df.rename(columns={'Time (Monthly) Code':'time'})
+  input_sheet_df['time'] = input_sheet_df['time'].astype('int')
+  ibc = input_sheet_df.astype('float')
+  ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+  
+  return ibc
+
 def google_trend(kw):
   #@st.cache
   kw_list = [kw]
@@ -51,11 +69,11 @@ def google_trend(kw):
 
   # Check correlation
   level = ibc['Coincident Index'][228:]
-  level.index = t.index
-  cor_level = level.corr(t)
+  level.index = t[:len(ibc)-228].index
+  cor_level = level.corr(t[:len(ibc)-228])
   ann = ibc['Coincident ann'][228:]
-  ann.index = a.index
-  cor_ann = ann.corr(a)
+  ann.index = a[:len(ibc)-228].index
+  cor_ann = ann.corr(a[:len(ibc)-228])
 
   return data, cor_level, cor_ann
 
@@ -192,7 +210,7 @@ def lstm_rnn(features):
 def nowcasting(XX):
 
   # feature scaling
-  END = len(XX)-XX['ibc'].isnull().sum()
+  END = len(XX)-XX['Coincident Index'].isnull().sum()
   dataset = XX.iloc[:END,:].values
   data_mean = dataset.mean(axis=0)
   data_std = dataset.std(axis=0)
@@ -236,42 +254,46 @@ def nowcasting(XX):
 
   # save the output
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
-
-  df_concat = pd.concat([past_estimate.set_axis(['ibc'], axis='columns'), future_estimate])
+  df_concat = pd.concat([past_estimate.set_axis(['Coincident Index'], axis='columns'), future_estimate])
 
   return df_concat
 
-# load the IBC data
-ibc = pd.read_csv('data/ibc_new.csv')
-ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
-dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
 
+
+
+
+
+
+# Streamlit
 st.title('景気ナウキャスティング')
 
 st.sidebar.write("""Googleトレンドによる景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 
-st.write(f"""### 「{kw1}」のグーグルトレンド""")
+# Set time series dataset
+ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
+data2, cor_level2, cor_ann2 = google_trend(kw2)
+X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
+y = ibc[228:]
+y = y.set_index('time')
+y.index = X[:len(ibc)-228].index
+ts = pd.merge(y, X, on='date')
+ts = ts.drop('Coincident ann', axis=1)
+
+st.write(f"""### 景気動向指数の推移""")
+st.line_chart(ts['Coincident Index'])
+
+st.write(f"""### 「{kw1}」のグーグルトレンド""")
 st.line_chart(data1.iloc[:,0:2])
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
 st.write(f"""### 「{kw2}」のグーグルトレンド""")
-data2, cor_level2, cor_ann2 = google_trend(kw2)
 st.line_chart(data2.iloc[:,0:2])
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
-
-# Set time series dataset
-X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
-y = ibc[228:]
-y = y.set_index('time')
-y.index = X.index
-ts = pd.merge(y, X, on='date')
-ts = ts.drop('Coincident ann', axis=1)
 
 st.dataframe(ts)
 
@@ -291,10 +313,19 @@ if st.button('推計開始'):
   st.line_chart(df2.iloc[:,0:2])
 
   # merge google trend with ibc data
-  temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
-  XX = pd.merge(wibc, temp, on='date')
-
+  temp1 = ts
+  temp1['monthly'] = ts.index.year.astype('str') + '-' + ts.index.month.astype('str')
+  temp2 = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
+  temp2['monthly'] = temp2.index.year.astype('str') + '-' + temp2.index.month.astype('str')
+  temp3 = temp1.reset_index().set_index('monthly')
+  temp4 = temp2.reset_index().set_index('monthly')
+  temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
+  XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
+  st.dataframe(XX)
+  
+  # Nowcasting
   result = nowcasting(XX)
+  st.dataframe(result)
   st.line_chart(result)
 
   comment.write('推計が完了しました')
