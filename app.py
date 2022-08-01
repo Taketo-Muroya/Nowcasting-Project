@@ -312,8 +312,20 @@ if st.button('推計開始'):
   st.line_chart(df2.iloc[:,0:2])
 
   # merge google trend with ibc data
-  temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
-  XX = pd.merge(wibc, temp, on='date')
+  temp1 = ts
+  temp1['monthly'] = ts.index.year.astype('str') + '-' + ts.index.month.astype('str')
+  temp2 = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
+  temp2['monthly'] = temp2.index.year.astype('str') + '-' + temp2.index.month.astype('str')
+  temp3 = temp1.reset_index().set_index('monthly')
+  temp4 = temp2.reset_index().set_index('monthly')
+  temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
+  
+  st.dataframe(temp5)
+  
+  #XX = temp5[['date_y','Coincident Index','trend_x','trend_y']].set_index('date_y')
+  
+  #temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
+  #XX = pd.merge(wibc, temp, on='date')
 
   result = nowcasting(XX)
   st.line_chart(result)
