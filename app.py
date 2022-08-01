@@ -193,7 +193,7 @@ def lstm_rnn(features):
 def nowcasting(XX):
 
   # feature scaling
-  END = len(XX)-XX['ibc'].isnull().sum()
+  END = len(XX)-XX['Coincident Index'].isnull().sum()
   dataset = XX.iloc[:END,:].values
   data_mean = dataset.mean(axis=0)
   data_std = dataset.std(axis=0)
@@ -319,10 +319,8 @@ if st.button('推計開始'):
   temp3 = temp1.reset_index().set_index('monthly')
   temp4 = temp2.reset_index().set_index('monthly')
   temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
-  
-  st.dataframe(temp5)
-  
-  #XX = temp5[['date_y','Coincident Index','trend_x','trend_y']].set_index('date_y')
+  XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
+  st.dataframe(XX)
   
   #temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
   #XX = pd.merge(wibc, temp, on='date')
