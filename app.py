@@ -34,7 +34,7 @@ pytrends = TrendReq(hl='ja-JP', tz=360)
 def google_trend(kw):
   #@st.cache
   kw_list = [kw]
-  pytrends.build_payload(kw_list, timeframe='2004-01-01 2021-11-30', geo='JP')
+  pytrends.build_payload(kw_list, timeframe='all', geo='JP')
   gt = pytrends.interest_over_time()
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
 
