@@ -265,25 +265,28 @@ st.sidebar.write("""Googleトレンドによる景気予測ツールです。検
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 
-st.write(f"""### 「{kw1}」のグーグルトレンド""")
-data1, cor_level1, cor_ann1 = google_trend(kw1)
-st.line_chart(data1.iloc[:,0:2])
-st.write("水準の相関関数：{:.2f}".format(cor_level1))
-st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
-
-st.write(f"""### 「{kw2}」のグーグルトレンド""")
-data2, cor_level2, cor_ann2 = google_trend(kw2)
-st.line_chart(data2.iloc[:,0:2])
-st.write("水準の相関関数：{:.2f}".format(cor_level2))
-st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
-
 # Set time series dataset
+data1, cor_level1, cor_ann1 = google_trend(kw1)
+data2, cor_level2, cor_ann2 = google_trend(kw2)
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 y = ibc[228:]
 y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
+
+st.write(f"""### 景気動向指数の推移""")
+st.line_chart(ts['Coincident Index'])
+
+st.write(f"""### 「{kw1}」のグーグルトレンド""")
+st.line_chart(data1.iloc[:,0:2])
+st.write("水準の相関関数：{:.2f}".format(cor_level1))
+st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
+
+st.write(f"""### 「{kw2}」のグーグルトレンド""")
+st.line_chart(data2.iloc[:,0:2])
+st.write("水準の相関関数：{:.2f}".format(cor_level2))
+st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 st.dataframe(ts)
 
