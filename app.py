@@ -35,6 +35,23 @@ plt.rcParams['font.family'] = 'IPAexGothic'
 # API Connection
 pytrends = TrendReq(hl='ja-JP', tz=360)
 
+def get_ibc_data(url):
+  url_index = url + 'di.html'
+  res = requests.get(url_index)
+  soup = BeautifulSoup(res.text, 'html.parser')
+  name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
+  input_file_name = url + name
+  input_book = pd.ExcelFile(input_file_name)
+  input_sheet_name = input_book.sheet_names
+  input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
+  input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
+  input_sheet_df = input_sheet_df.rename(columns={'Time (Monthly) Code':'time'})
+  input_sheet_df['time'] = input_sheet_df['time'].astype('int')
+  ibc = input_sheet_df.astype('float')
+  ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+  
+  return ibc
+
 def google_trend(kw):
   #@st.cache
   kw_list = [kw]
@@ -241,21 +258,10 @@ def nowcasting(XX):
 
   return df_concat
 
-# load the IBC data
-url = 'https://www.esri.cao.go.jp/jp/stat/di/'
-url_index = url + 'di.html'
-res = requests.get(url_index)
-soup = BeautifulSoup(res.text, 'html.parser')
-name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
-input_file_name = url + name
-input_book = pd.ExcelFile(input_file_name)
-input_sheet_name = input_book.sheet_names
-input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
-input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
-input_sheet_df = input_sheet_df.rename(columns={'Time (Monthly) Code':'time'})
-input_sheet_df['time'] = input_sheet_df['time'].astype('int')
-ibc = input_sheet_df.astype('float')
-ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+
+
+
+
 
 
 # Streamlit
@@ -266,6 +272,7 @@ kw1 = st.sidebar.text_input('検索ワードを記入してください', '失�
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 
 # Set time series dataset
+ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 data2, cor_level2, cor_ann2 = google_trend(kw2)
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
