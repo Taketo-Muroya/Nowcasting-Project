@@ -326,6 +326,7 @@ if st.button('推計開始'):
   #XX = pd.merge(wibc, temp, on='date')
 
   result = nowcasting(XX)
+  st.dataframe(result)
   st.line_chart(result)
 
   comment.write('推計が完了しました')
