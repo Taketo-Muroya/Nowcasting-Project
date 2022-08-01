@@ -34,7 +34,7 @@ pytrends = TrendReq(hl='ja-JP', tz=360)
 def google_trend(kw):
   #@st.cache
   kw_list = [kw]
-  pytrends.build_payload(kw_list, timeframe='2004-01-01 2021-11-30', geo='JP')
+  pytrends.build_payload(kw_list, timeframe='all', geo='JP')
   gt = pytrends.interest_over_time()
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
 
@@ -48,11 +48,11 @@ def google_trend(kw):
 
   # Check correlation
   level = ibc['Coincident Index'][228:]
-  level.index = t.index
-  cor_level = level.corr(t)
+  level.index = t[:len(ibc)-228].index
+  cor_level = level.corr(t[:len(ibc)-228])
   ann = ibc['Coincident ann'][228:]
-  ann.index = a.index
-  cor_ann = ann.corr(a)
+  ann.index = a[:len(ibc)-228].index
+  cor_ann = ann.corr(a[:len(ibc)-228])
 
   return data, cor_level, cor_ann
 
@@ -239,8 +239,34 @@ def nowcasting(XX):
   return df_concat
 
 # load the IBC data
-ibc = pd.read_csv('data/ibc_new.csv')
+from bs4 import BeautifulSoup
+import requests
+
+url = 'https://www.esri.cao.go.jp/jp/stat/di/'
+url_index = url + 'di.html'
+res = requests.get(url_index)
+soup = BeautifulSoup(res.text, 'html.parser')
+
+name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
+input_file_name = url + name
+
+#xls book Open (xls, xlsxのどちらでも可能)
+input_book = pd.ExcelFile(input_file_name)
+#sheet_namesメソッドでExcelブック内の各シートの名前をリストで取得できる
+input_sheet_name = input_book.sheet_names
+
+#DataFrameとしてsheet1枚のデータを読込み
+input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
+input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
+input_sheet_df = input_sheet_df.rename(columns={'Time (Monthly) Code':'time'})
+input_sheet_df['time'] = input_sheet_df['time'].astype('int')
+
+ibc = input_sheet_df.astype('float')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+
+#ibc = pd.read_csv('data/ibc_new.csv')
+#ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+
 dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
 wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
 
@@ -266,7 +292,7 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 y = ibc[228:]
 y = y.set_index('time')
-y.index = X.index
+y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
