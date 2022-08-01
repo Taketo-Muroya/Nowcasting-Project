@@ -3,3 +3,4 @@ statsmodels
 pytrends
 tensorflow
 sklearn
+bs4
