@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -24,6 +25,9 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
+
+from bs4 import BeautifulSoup
+import requests
 
 from pytrends.request import TrendReq
 plt.rcParams['font.family'] = 'IPAexGothic'
@@ -239,20 +243,14 @@ def nowcasting(XX):
   return df_concat
 
 # load the IBC data
-from bs4 import BeautifulSoup
-import requests
-
 url = 'https://www.esri.cao.go.jp/jp/stat/di/'
 url_index = url + 'di.html'
 res = requests.get(url_index)
 soup = BeautifulSoup(res.text, 'html.parser')
-
 name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
 input_file_name = url + name
 
-#xls book Open (xls, xlsxのどちらでも可能)
 input_book = pd.ExcelFile(input_file_name)
-#sheet_namesメソッドでExcelブック内の各シートの名前をリストで取得できる
 input_sheet_name = input_book.sheet_names
 
 #DataFrameとしてsheet1枚のデータを読込み
