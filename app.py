@@ -248,25 +248,17 @@ res = requests.get(url_index)
 soup = BeautifulSoup(res.text, 'html.parser')
 name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
 input_file_name = url + name
-
 input_book = pd.ExcelFile(input_file_name)
 input_sheet_name = input_book.sheet_names
-
-#DataFrameとしてsheet1枚のデータを読込み
 input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
 input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
 input_sheet_df = input_sheet_df.rename(columns={'Time (Monthly) Code':'time'})
 input_sheet_df['time'] = input_sheet_df['time'].astype('int')
-
 ibc = input_sheet_df.astype('float')
 ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 
-#ibc = pd.read_csv('data/ibc_new.csv')
-#ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
 
-dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d')
-wibc = pd.read_csv('data/wibc.csv', index_col=0, date_parser=dateparse, dtype='float')
-
+# Streamlit
 st.title('景気ナウキャスティング')
 
 st.sidebar.write("""Googleトレンドによる景気予測ツールです。検索ワードを記入してください。""")
@@ -321,9 +313,7 @@ if st.button('推計開始'):
   XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
   st.dataframe(XX)
   
-  #temp = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
-  #XX = pd.merge(wibc, temp, on='date')
-
+  # Nowcasting
   result = nowcasting(XX)
   st.dataframe(result)
   st.line_chart(result)
