@@ -327,5 +327,3 @@ if st.button('推計開始'):
   st.line_chart(result)
 
   comment.write('推計が完了しました')
-
-
