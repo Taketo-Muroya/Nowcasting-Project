@@ -1,4 +1,5 @@
 
+#Setting Up
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -261,9 +262,6 @@ def nowcasting(XX):
 
 
 
-
-
-
 # Streamlit
 st.title('景気ナウキャスティング')
 
@@ -329,3 +327,5 @@ if st.button('推計開始'):
   st.line_chart(result)
 
   comment.write('推計が完了しました')
+
+
