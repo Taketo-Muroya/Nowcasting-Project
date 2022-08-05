@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 # Setting up
+=======
+#Setting Up
+>>>>>>> 2df1b6da7534de7ac35088b4a365a63f287b5d55
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -258,9 +262,6 @@ def nowcasting(XX):
   df_concat = pd.concat([past_estimate.set_axis(['Coincident Index'], axis='columns'), future_estimate])
 
   return df_concat
-
-
-
 
 
 
