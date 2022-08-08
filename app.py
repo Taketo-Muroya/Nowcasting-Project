@@ -318,7 +318,14 @@ if st.button('推計開始'):
   
   # Estimation
   output, test_score, single_step_model = lstm_rnn(ts)
-  st.line_chart(output)
+  
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1)
+  ax.plot(output.index, output.iloc[:,1], linestyle='-', color='b', label='Actual')
+  ax.plot(output.index, output.iloc[:,0], linestyle='--', color='#e46409', label='Predict')
+  ax.legend()
+  st.pyplot(fig)
+
   st.write("Test set score: {:.2f}".format(test_score))
   
   # Get the weekly google trend data
