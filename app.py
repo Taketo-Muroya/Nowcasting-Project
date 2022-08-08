@@ -300,6 +300,21 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 st.dataframe(ts)
 
+
+
+
+# Plot trend
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(data.index, ts['Coincident Index'], linestyle='-', color='b', label='IBC')
+ax.plot(data.index, data1.iloc[:,0:2], linestyle='--', color='#e46409', label='google search: "unemployment"')
+ax.legend()
+plt.title('Google Search: "Unemployment"')
+
+
+
+
+
 if st.button('推計開始'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
