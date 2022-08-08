@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-#Setting Up
-=======
 
 # 設定 -------------------------------------------------------------------------------------
->>>>>>> da69d4422dbcfdee1e67fa072639e2a2bae54c6c
 import streamlit as st
 import pandas as pd
 import numpy as np
