@@ -283,9 +283,7 @@ ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
 st.write(f"""### 景気動向指数の推移""")
-#st.line_chart(ts['Coincident Index'])
-plt.plot(ts)
-plt.show()
+st.line_chart(ts['Coincident Index'])
 
 st.write(f"""### 「{kw1}」のグーグルトレンド""")
 st.line_chart(data1.iloc[:,0:2])
@@ -301,12 +299,13 @@ st.dataframe(ts)
 
 
 # Plot trend
-#fig = plt.figure()
-#ax = fig.add_subplot(1, 1, 1)
-#ax.plot(data1.index, ts['Coincident Index'], linestyle='-', color='b', label='IBC')
-#ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='google search: "unemployment"')
-#ax.legend()
-#plt.title('Google Search: "Unemployment"')
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(data1.index, ts['Coincident Index'], linestyle='-', color='b', label='IBC')
+ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='google search: "unemployment"')
+ax.legend()
+plt.title('Google Search: "Unemployment"')
+st.pyplot(fig)
 
 
 if st.button('推計開始'):
