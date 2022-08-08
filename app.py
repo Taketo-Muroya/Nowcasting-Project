@@ -290,7 +290,11 @@ ax.legend()
 st.pyplot(fig)
 
 st.write(f"""### 「{kw1}」のグーグルトレンド""")
-st.line_chart(data1.iloc[:,0:2])
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(data1.index, data1.iloc[:,0:2], linestyle='-', color='b', label='Indexes of Business Conditions')
+ax.legend()
+st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
