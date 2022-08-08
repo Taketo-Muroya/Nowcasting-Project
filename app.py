@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 #Setting Up
+=======
+
+# 設定 -------------------------------------------------------------------------------------
+>>>>>>> da69d4422dbcfdee1e67fa072639e2a2bae54c6c
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -35,11 +40,13 @@ plt.rcParams['font.family'] = 'IPAexGothic'
 # API Connection
 pytrends = TrendReq(hl='ja-JP', tz=360)
 
+
+# ここから関数
 def get_ibc_data(url):
   url_index = url + 'di.html'
   res = requests.get(url_index)
   soup = BeautifulSoup(res.text, 'html.parser')
-  name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
+  name = soup.find_all('a', {'target': '_blank'})[2].attrs['href']
   input_file_name = url + name
   input_book = pd.ExcelFile(input_file_name)
   input_sheet_name = input_book.sheet_names
@@ -258,10 +265,13 @@ def nowcasting(XX):
 
   return df_concat
 
+# 設定 -------------------------------------------------------------------------------------
 
 
 
-# Streamlit
+
+
+# 本体 -------------------------------------------------------------------------------------
 st.title('景気ナウキャスティング')
 
 st.sidebar.write("""Googleトレンドによる景気予測ツールです。検索ワードを記入してください。""")
@@ -293,6 +303,21 @@ st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 st.dataframe(ts)
+
+
+
+
+# Plot trend
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(data.index, ts['Coincident Index'], linestyle='-', color='b', label='IBC')
+ax.plot(data.index, data1.iloc[:,0:2], linestyle='--', color='#e46409', label='google search: "unemployment"')
+ax.legend()
+plt.title('Google Search: "Unemployment"')
+
+
+
+
 
 if st.button('推計開始'):
   comment = st.empty()
