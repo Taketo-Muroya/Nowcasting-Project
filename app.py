@@ -283,7 +283,12 @@ ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
 st.write(f"""### 景気動向指数の推移""")
-st.line_chart(ts['Coincident Index'])
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='IBC')
+ax.legend()
+st.pyplot(fig)
+#st.line_chart(ts['Coincident Index'])
 
 st.write(f"""### 「{kw1}」のグーグルトレンド""")
 st.line_chart(data1.iloc[:,0:2])
