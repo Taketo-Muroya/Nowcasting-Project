@@ -309,7 +309,7 @@ st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
-st.dataframe(ts)
+#st.dataframe(ts)
 
 
 if st.button('推計開始'):
