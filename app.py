@@ -299,12 +299,12 @@ st.dataframe(ts)
 
 
 # Plot trend
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
-ax.plot(data1.index, ts['Coincident Index'], linestyle='-', color='b', label='IBC')
+#fig = plt.figure()
+#ax = fig.add_subplot(1, 1, 1)
+#ax.plot(data1.index, ts['Coincident Index'], linestyle='-', color='b', label='IBC')
 #ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='google search: "unemployment"')
-ax.legend()
-plt.title('Google Search: "Unemployment"')
+#ax.legend()
+#plt.title('Google Search: "Unemployment"')
 
 
 if st.button('推計開始'):
