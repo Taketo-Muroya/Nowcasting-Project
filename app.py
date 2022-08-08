@@ -42,7 +42,7 @@ def get_ibc_data(url):
   soup = BeautifulSoup(res.text, 'html.parser')
   name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
   input_file_name = url + name
-  input_book = pd.ExcelFile(input_file_name, engine="openpyxl")
+  input_book = pd.ExcelFile(input_file_name)
   input_sheet_name = input_book.sheet_names
   input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
   input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
