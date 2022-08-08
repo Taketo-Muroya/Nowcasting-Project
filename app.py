@@ -284,7 +284,7 @@ ts = ts.drop('Coincident ann', axis=1)
 
 st.write(f"""### 景気動向指数の推移""")
 #st.line_chart(ts['Coincident Index'])
-plt.plot(ts['Coincident Index'])
+plt.plot(ts)
 plt.show()
 
 st.write(f"""### 「{kw1}」のグーグルトレンド""")
