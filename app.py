@@ -264,9 +264,6 @@ def nowcasting(XX):
 # 設定 -------------------------------------------------------------------------------------
 
 
-
-
-
 # 本体 -------------------------------------------------------------------------------------
 st.title('景気ナウキャスティング')
 
@@ -301,8 +298,6 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 st.dataframe(ts)
 
 
-
-
 # Plot trend
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
@@ -310,9 +305,6 @@ ax.plot(data1.index, ts['Coincident Index'], linestyle='-', color='b', label='IB
 ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='google search: "unemployment"')
 ax.legend()
 plt.title('Google Search: "Unemployment"')
-
-
-
 
 
 if st.button('推計開始'):
