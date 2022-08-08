@@ -285,7 +285,7 @@ ts = ts.drop('Coincident ann', axis=1)
 st.write(f"""### 景気動向指数の推移""")
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
-ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='景気動向指数')
+ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
 st.pyplot(fig)
 
