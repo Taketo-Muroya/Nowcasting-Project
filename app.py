@@ -294,15 +294,32 @@ ax.legend()
 st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
+  
+# Estimation
+output, test_score, single_step_model = lstm_rnn(ts)
+
+# Get the weekly google trend data
+df1 = weekly_google_trend(kw1)
+df2 = weekly_google_trend(kw2)
+
+# merge google trend with ibc data
+temp1 = ts
+temp1['monthly'] = ts.index.year.astype('str') + '-' + ts.index.month.astype('str')
+temp2 = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
+temp2['monthly'] = temp2.index.year.astype('str') + '-' + temp2.index.month.astype('str')
+temp3 = temp1.reset_index().set_index('monthly')
+temp4 = temp2.reset_index().set_index('monthly')
+temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
+XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
+
+# Nowcasting
+result = nowcasting(XX)
 
 
-if st.button('推計開始１', key=1):
+if st.button('推計開始１'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
-  
-  # Estimation
-  output, test_score, single_step_model = lstm_rnn(ts)
-  
+
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(output.index, output.iloc[:,1], linestyle='-', color='b', label='Actual')
@@ -311,45 +328,33 @@ if st.button('推計開始１', key=1):
   st.pyplot(fig)
 
   st.write("Test set score: {:.2f}".format(test_score))
-  
+
   comment.write('推計が完了しました')
 
+if st.button('推計開始２'):
+  comment = st.empty()
+  comment.write('Googleトレンドによる推計を実行しています')
 
-  if st.button('推計開始２', key=2):
-    # Get the weekly google trend data
-    st.write(f"""### 「{kw1}」の週次検索数""")
-    df1 = weekly_google_trend(kw1)
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend')
-    ax.plot(df1.index, df1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
-    ax.legend()
-    st.pyplot(fig)
+  st.write(f"""### 「{kw1}」の週次検索数""")
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1)
+  ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend')
+  ax.plot(df1.index, df1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
+  ax.legend()
+  st.pyplot(fig)
 
-    st.write(f"""### 「{kw2}」の週次検索数""")
-    df2 = weekly_google_trend(kw2)
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    ax.plot(df2.index, df2.iloc[:,1], linestyle='-', color='b', label='Trend')
-    ax.plot(df2.index, df2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
-    ax.legend()
-    st.pyplot(fig)
+  st.write(f"""### 「{kw2}」の週次検索数""")
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1)
+  ax.plot(df2.index, df2.iloc[:,1], linestyle='-', color='b', label='Trend')
+  ax.plot(df2.index, df2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
+  ax.legend()
+  st.pyplot(fig)
 
-    # merge google trend with ibc data
-    temp1 = ts
-    temp1['monthly'] = ts.index.year.astype('str') + '-' + ts.index.month.astype('str')
-    temp2 = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
-    temp2['monthly'] = temp2.index.year.astype('str') + '-' + temp2.index.month.astype('str')
-    temp3 = temp1.reset_index().set_index('monthly')
-    temp4 = temp2.reset_index().set_index('monthly')
-    temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
-    XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1)
+  ax.plot(result.index, result, linestyle='-', color='b', label='Trend')
+  ax.legend()
+  st.pyplot(fig)
 
-    # Nowcasting
-    result = nowcasting(XX)
-
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    ax.plot(result.index, result, linestyle='-', color='b', label='Trend')
-    ax.legend()
-    st.pyplot(fig)
+  comment.write('推計が完了しました')
