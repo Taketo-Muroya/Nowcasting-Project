@@ -313,7 +313,7 @@ if st.button('推計開始'):
   st.pyplot(fig)
   st.write("Test set score: {:.2f}".format(test_score))
 
-  st.write("#### 次に週次の検索数で景気動向指数をナウキャスティングします。")
+  st.write("##### 次に週次の検索数で景気動向指数をナウキャスティングします。")
 
   # Get the weekly google trend data
   df1 = weekly_google_trend(kw1)
@@ -343,7 +343,7 @@ if st.button('推計開始'):
 
   # Nowcasting
   result = nowcasting(XX)
-
+  st.write(f"""### 推計された週次の景気動向指数""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(result.index, result, linestyle='-', color='b', label='Nowcasting')
