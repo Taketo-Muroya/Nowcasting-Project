@@ -178,8 +178,10 @@ def lstm_rnn(features):
 
   single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
 
+  test_score = 0
+
   while test_score < 0.7:
-    
+
     # train the model
     single_step_history = single_step_model.fit(
       train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
@@ -299,7 +301,7 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
   
 # 推計 -------------------------------------------------------------------------------------
 
-if st.button('推計開始１'):
+if st.button('推計開始'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
 
