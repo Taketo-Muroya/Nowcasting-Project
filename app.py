@@ -30,7 +30,7 @@ def get_ibc_data(url):
   url_index = url + 'di.html'
   res = requests.get(url_index)
   soup = BeautifulSoup(res.text, 'html.parser')
-  name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
+  name = soup.find_all('a', {'target': '_blank'})[2].attrs['href']
   if 'xlsx' in name:
     input_file_name = url + name
     input_book = pd.ExcelFile(input_file_name)
@@ -42,7 +42,7 @@ def get_ibc_data(url):
     ibc = input_sheet_df.astype('float')
     ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
   else:
-    name = soup.find_all('a', {'target': '_blank'})[2].attrs['href']
+    name = soup.find_all('a', {'target': '_blank'})[3].attrs['href']
     input_file_name = url + name
     input_book = pd.ExcelFile(input_file_name)
     input_sheet_name = input_book.sheet_names
