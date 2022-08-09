@@ -254,10 +254,9 @@ def nowcasting(XX):
 
 # 本体 -------------------------------------------------------------------------------------
 st.title('景気ナウキャスティング')
-st.sidebar.write("""Googleトレンドによる景気予測ツールです。検索ワードを記入してください。""")
+st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
-
 
 # Set time series dataset
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
@@ -270,8 +269,8 @@ y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
-
-st.write(f"""### 「{kw1}」のグーグルトレンド""")
+# グーグル検索数のグラフ
+st.write(f"""### 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
@@ -284,8 +283,7 @@ st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
-
-st.write(f"""### 「{kw2}」のグーグルトレンド""")
+st.write(f"""### 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
@@ -297,12 +295,12 @@ ax.legend()
 st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
-  
+
 # 推計 -------------------------------------------------------------------------------------
 
 if st.button('推計開始'):
   comment = st.empty()
-  comment.write('Googleトレンドによる推計を実行しています')
+  comment.write('Google検索数を用いて景気動向指数を推計しています。')
 
   # Estimation
   output, test_score, single_step_model = lstm_rnn(ts)
@@ -314,6 +312,8 @@ if st.button('推計開始'):
   ax.legend()
   st.pyplot(fig)
   st.write("Test set score: {:.2f}".format(test_score))
+
+  st.write(f"""#### 次に週次の検索数で""")
 
   # Get the weekly google trend data
   df1 = weekly_google_trend(kw1)
