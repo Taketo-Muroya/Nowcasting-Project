@@ -246,7 +246,7 @@ def nowcasting(XX):
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
   df_concat = pd.concat([past_estimate.set_axis(['Coincident Index'], axis='columns'), future_estimate])
 
-  return df_concat
+  return past_estimate, future_estimate
 
 
 # 本体 -------------------------------------------------------------------------------------
@@ -297,7 +297,7 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 if st.button('推計開始'):
   comment = st.empty()
-  comment.write('Google検索数を用いて景気動向指数を推計しています。')
+  comment.write('２系列のGoogle検索数を用いて景気動向指数を推計しています。')
 
   # Estimation
   output, test_score, single_step_model = lstm_rnn(ts)
@@ -342,12 +342,15 @@ if st.button('推計開始'):
   XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
 
   # Nowcasting
-  result = nowcasting(XX)
-  st.write(f"""### 推計された週次の景気動向指数""")
-  fig = plt.figure()
-  ax = fig.add_subplot(1, 1, 1)
-  ax.plot(result.index, result, linestyle='-', color='b', label='Nowcasting')
-  ax.legend()
-  st.pyplot(fig)
+  past_estimate, future_estimate = nowcasting(XX)
+  #st.write(f"""### 推計された週次の景気動向指数""")
+  #fig = plt.figure()
+  #ax = fig.add_subplot(1, 1, 1)
+  #ax.plot(result.index, result, linestyle='-', color='b', label='Nowcasting')
+  #ax.legend()
+  #st.pyplot(fig)
+
+  st.dataframe(past_estimate)
+  st.dataframe(future_estimate)
 
   comment.write('推計が完了しました。')
