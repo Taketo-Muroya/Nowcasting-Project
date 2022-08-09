@@ -320,7 +320,7 @@ if st.button('推計開始'):
   df1 = weekly_google_trend(kw1)
   df2 = weekly_google_trend(kw2)
 
-  st.write(f"""### 「{kw1}」&「{kw2}」の週次検索数""")
+  st.write(f"""### 「{kw1}」&「{kw2}」の検索数（週次）""")
   fig = plt.figure()
   ax = fig.add_subplot(2, 1, 1)
   ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend Element')
@@ -344,7 +344,7 @@ if st.button('推計開始'):
 
   # Nowcasting
   past_estimate, future_estimate, df_concat = nowcasting(XX)
-  st.write(f"""### 推計された週次の景気動向指数""")
+  st.write(f"""### 推計された景気動向指数（週次）""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(past_estimate.index, past_estimate, linestyle='-', color='b', label='Weekly IBC')
