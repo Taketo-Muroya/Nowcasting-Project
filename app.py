@@ -352,5 +352,8 @@ if st.button('推計開始'):
 
   st.dataframe(past_estimate)
   st.dataframe(future_estimate)
+  df_concat = pd.concat(past_estimate, future_estimate)
+  #  df_concat = pd.concat([past_estimate.set_axis(['Coincident Index'], axis='columns'), future_estimate])
+  st.dataframe(df_concat)
 
   comment.write('推計が完了しました。')
