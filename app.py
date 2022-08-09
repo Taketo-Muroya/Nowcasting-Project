@@ -296,7 +296,7 @@ st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 
-if st.button('推計開始'):
+if st.button('推計開始１'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
   
@@ -314,7 +314,8 @@ if st.button('推計開始'):
   
   comment.write('推計が完了しました')
 
-if st.button('推計開始'):
+
+if st.button('推計開始２'):
   comment = st.empty()
   comment.write('Googleトレンドによる推計を実行しています')
 
