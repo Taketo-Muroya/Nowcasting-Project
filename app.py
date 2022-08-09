@@ -220,9 +220,6 @@ def nowcasting(XX):
   past_estimate = pd.DataFrame(single_step_model.predict(x_single)*data_std[0]+data_mean[0])
   past_estimate.index = XX.iloc[past_history:END,:].index
 
-  # visualize the result 
-  #st.line_chart(past_estimate)
-
   # nowcast the future IBC
   for i in range(END, len(XX)):
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
@@ -351,6 +348,7 @@ if st.button('推計開始'):
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(result.index, result, linestyle='-', color='b', label='Nowcasting')
   ax.legend()
+  plt.axvline(x=len(past_estimate))
   st.pyplot(fig)
 
   comment.write('推計が完了しました。')
