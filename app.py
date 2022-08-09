@@ -305,6 +305,7 @@ if st.button('推計開始'):
   # Estimation
   output, test_score, single_step_model = lstm_rnn(ts)
 
+  st.write(f"""### 推計された景気動向指数""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(output.index, output.iloc[:,1], linestyle='-', color='b', label='Actual')
@@ -313,7 +314,9 @@ if st.button('推計開始'):
   st.pyplot(fig)
   st.write("Test set score: {:.2f}".format(test_score))
 
+  st.write("#####  ")
   st.write("##### 次に週次の検索数で景気動向指数をナウキャスティングします。")
+  st.write("#####  ")
 
   # Get the weekly google trend data
   df1 = weekly_google_trend(kw1)
