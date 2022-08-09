@@ -182,7 +182,7 @@ def lstm_rnn(features):
   while test_score < 0.5:
     # train the model
     single_step_history = single_step_model.fit(
-      train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
+      train_data_single, epochs=30, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
       )
 
     # evaluate the model
