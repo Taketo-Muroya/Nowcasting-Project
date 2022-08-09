@@ -9,10 +9,10 @@ import tensorflow as tf
 import statsmodels.api as sm
 import requests
 
+from math import sqrt
 from bs4 import BeautifulSoup
 from pytrends.request import TrendReq
 from statsmodels.tsa.seasonal import seasonal_decompose
-from math import sqrt
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import precision_score
@@ -262,14 +262,13 @@ def nowcasting(XX):
 
   return past_estimate, future_estimate, df_concat
 
-
 # 本体 -------------------------------------------------------------------------------------
 st.title('景気ナウキャスティング')
 st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 
-# Set time series dataset
+# 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 data2, cor_level2, cor_ann2 = google_trend(kw2)
@@ -279,8 +278,7 @@ y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
-
-st.write(f"""##### 景気動向指数の最新月は{ts.index[-1]}""")
+#st.write(f"""##### 景気動向指数の最新月は{ts.index[-1]}""")
 
 # グーグル検索数のグラフ
 st.write(f"""### 景気動向指数と「{kw1}」のGoogle検索数""")
@@ -310,12 +308,11 @@ st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 # 推計 -------------------------------------------------------------------------------------
-
 if st.button('推計開始'):
   comment = st.empty()
   comment.write('Google検索数を用いて景気動向指数を推計しています。')
 
-  # Estimation
+  # 月次データによる推計
   output, test_score, single_step_model = lstm_rnn(ts)
 
   st.write(f"""### 推計された景気動向指数""")
@@ -332,7 +329,7 @@ if st.button('推計開始'):
   st.write("##### 次に週次の検索数で景気動向指数をナウキャスティングします。")
   st.write("#####  ")
 
-  # Get the weekly google trend data
+  # 週次のグーグル検索数の取得
   df1 = weekly_google_trend(kw1)
   df2 = weekly_google_trend(kw2)
 
@@ -348,7 +345,7 @@ if st.button('推計開始'):
   ax.legend()
   st.pyplot(fig)
 
-  # merge google trend with ibc data
+  # 週次の景気動向指数とグーグル検索数の統合
   temp1 = ts
   temp1['monthly'] = ts.index.year.astype('str') + '-' + ts.index.month.astype('str')
   temp2 = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
