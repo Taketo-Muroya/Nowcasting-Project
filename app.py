@@ -228,8 +228,8 @@ def nowcasting(XX):
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
     #XX.iat[i,0] = XX.iat[i-1,0]
     temp = XX.iloc[:i+1,:]
-    st.write(temp.tail())
-    st.write('-----------------------------------------------')
+    #st.write(temp.tail())
+    #st.write('-----------------------------------------------')
 
     # feature scaling
     dataset = temp.values
@@ -242,8 +242,8 @@ def nowcasting(XX):
       dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
-    st.write(XX.tail(10))
-    st.write('-----------------------------------------------')
+    #st.write(XX.tail(10))
+    #st.write('-----------------------------------------------')
 
   # save the output
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
@@ -276,7 +276,7 @@ ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
 ax = fig.add_subplot(2, 1, 2)
-ax.plot(data1.index, data1.iloc[:,1], linestyle='-', color='b', label='Trend')
+ax.plot(data1.index, data1.iloc[:,1], linestyle='-', color='b', label='Trend Element')
 ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
 ax.legend()
 st.pyplot(fig)
@@ -289,7 +289,7 @@ ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
 ax = fig.add_subplot(2, 1, 2)
-ax.plot(data2.index, data2.iloc[:,1], linestyle='-', color='b', label='Trend')
+ax.plot(data2.index, data2.iloc[:,1], linestyle='-', color='b', label='Trend Element')
 ax.plot(data2.index, data2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
 ax.legend()
 st.pyplot(fig)
@@ -313,7 +313,7 @@ if st.button('推計開始'):
   st.pyplot(fig)
   st.write("Test set score: {:.2f}".format(test_score))
 
-  st.write(f"""#### 次に週次の検索数で""")
+  st.write("#### 次に週次の検索数で景気動向指数をナウキャスティングします。")
 
   # Get the weekly google trend data
   df1 = weekly_google_trend(kw1)
@@ -322,11 +322,11 @@ if st.button('推計開始'):
   st.write(f"""### 「{kw1}」&「{kw2}」の週次検索数""")
   fig = plt.figure()
   ax = fig.add_subplot(2, 1, 1)
-  ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend')
+  ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend Element')
   ax.plot(df1.index, df1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
   ax.legend()
   ax = fig.add_subplot(2, 1, 2)
-  ax.plot(df2.index, df2.iloc[:,1], linestyle='-', color='b', label='Trend')
+  ax.plot(df2.index, df2.iloc[:,1], linestyle='-', color='b', label='Trend Element')
   ax.plot(df2.index, df2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
   ax.legend()
   st.pyplot(fig)
@@ -346,8 +346,8 @@ if st.button('推計開始'):
 
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
-  ax.plot(result.index, result, linestyle='-', color='b', label='Trend')
+  ax.plot(result.index, result, linestyle='-', color='b', label='Nowcasting')
   ax.legend()
   st.pyplot(fig)
 
-  comment.write('推計が完了しました')
+  comment.write('推計が完了しました。')
