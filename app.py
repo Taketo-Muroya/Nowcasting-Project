@@ -65,7 +65,7 @@ def google_trend(kw):
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
 
   # Extract trend factor and YoY
-  t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq', period=12).trend
+  t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq', period=6).trend
   #t = pd.DataFrame(t).rename(columns = {"trend":f"{kw}-trend"})
   a = gt.iloc[:,0].pct_change(12)
   #a = pd.DataFrame(a).rename(columns = {"variable":f"{kw}-YoY"})
@@ -91,7 +91,7 @@ def weekly_google_trend(kw):
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
  
   # Extract trend factor
-  s = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq', period=7)
+  s = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq', period=6)
   #s = seasonal_decompose(gt.iloc[:,0], freq=6, extrapolate_trend='freq')
   t = s.trend
   data = pd.merge(gt.iloc[:,0], t, on='date')
