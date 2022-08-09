@@ -249,8 +249,6 @@ def nowcasting(XX):
 
   return df_concat
 
-# 設定 -------------------------------------------------------------------------------------
-
 
 # 本体 -------------------------------------------------------------------------------------
 st.title('景気ナウキャスティング')
@@ -333,25 +331,29 @@ if st.button('推計開始'):
   ax.legend()
   st.pyplot(fig)
 
-  # merge google trend with ibc data
-  temp1 = ts
-  temp1['monthly'] = ts.index.year.astype('str') + '-' + ts.index.month.astype('str')
-  temp2 = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
-  temp2['monthly'] = temp2.index.year.astype('str') + '-' + temp2.index.month.astype('str')
-  temp3 = temp1.reset_index().set_index('monthly')
-  temp4 = temp2.reset_index().set_index('monthly')
-  temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
-  XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
-  
-  # Nowcasting
-  result = nowcasting(XX)
-
-  fig = plt.figure()
-  ax = fig.add_subplot(1, 1, 1)
-  ax.plot(result.index, result, linestyle='-', color='b', label='Trend')
-  ax.legend()
-  st.pyplot(fig)
-
-  st.dataframe(result)
-
   comment.write('推計が完了しました')
+
+  if st.button('推計開始'):
+    comment = st.empty()
+    comment.write('Googleトレンドによる推計を実行しています')
+
+    # merge google trend with ibc data
+    temp1 = ts
+    temp1['monthly'] = ts.index.year.astype('str') + '-' + ts.index.month.astype('str')
+    temp2 = pd.merge(df1.iloc[:,1], df2.iloc[:,1], on='date')
+    temp2['monthly'] = temp2.index.year.astype('str') + '-' + temp2.index.month.astype('str')
+    temp3 = temp1.reset_index().set_index('monthly')
+    temp4 = temp2.reset_index().set_index('monthly')
+    temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
+    XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
+    
+    # Nowcasting
+    result = nowcasting(XX)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    ax.plot(result.index, result, linestyle='-', color='b', label='Trend')
+    ax.legend()
+    st.pyplot(fig)
+
+    comment.write('推計が完了しました')
