@@ -342,16 +342,16 @@ if st.button('推計開始'):
   temp4 = temp2.reset_index().set_index('monthly')
   temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
   XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
-  #st.dataframe(XX)
   
   # Nowcasting
   result = nowcasting(XX)
-  #st.dataframe(result)
 
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(result.index, result, linestyle='-', color='b', label='Trend')
   ax.legend()
   st.pyplot(fig)
+
+  st.dataframe(result)
 
   comment.write('推計が完了しました')
