@@ -316,9 +316,6 @@ if st.button('推計開始１', key=1):
 
 
   if st.button('推計開始２', key=2):
-    comment = st.empty()
-    comment.write('Googleトレンドによる推計を実行しています')
-
     # Get the weekly google trend data
     st.write(f"""### 「{kw1}」の週次検索数""")
     df1 = weekly_google_trend(kw1)
@@ -356,8 +353,3 @@ if st.button('推計開始１', key=1):
     ax.plot(result.index, result, linestyle='-', color='b', label='Trend')
     ax.legend()
     st.pyplot(fig)
-
-    comment.write('推計が完了しました')
-  
-  else:
-    
