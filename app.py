@@ -348,7 +348,7 @@ if st.button('推計開始'):
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(result.index, result, linestyle='-', color='b', label='Nowcasting')
   ax.legend()
-  plt.axvline(x=len(past_estimate))
+  plt.axvline(x=len(temp3))
   st.pyplot(fig)
 
   comment.write('推計が完了しました。')
