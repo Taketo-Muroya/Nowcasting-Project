@@ -324,7 +324,7 @@ if st.button('推計開始'):
   ax.legend()
   st.pyplot(fig)
 
-st.write(f"""### 「{kw2}」の週次検索数""")
+  st.write(f"""### 「{kw2}」の週次検索数""")
   df2 = weekly_google_trend(kw2)
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
