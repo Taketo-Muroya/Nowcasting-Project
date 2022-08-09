@@ -330,9 +330,20 @@ if st.button('推計開始'):
   
   # Get the weekly google trend data
   df1 = weekly_google_trend(kw1)
-  st.line_chart(df1.iloc[:,0:2])
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1)
+  ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend')
+  ax.plot(df1.index, df1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
+  ax.legend()
+  st.pyplot(fig)
+
   df2 = weekly_google_trend(kw2)
-  st.line_chart(df2.iloc[:,0:2])
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1)
+  ax.plot(df2.index, df2.iloc[:,1], linestyle='-', color='b', label='Trend')
+  ax.plot(df2.index, df2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
+  ax.legend()
+  st.pyplot(fig)
 
   # merge google trend with ibc data
   temp1 = ts
