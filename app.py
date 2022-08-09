@@ -254,10 +254,10 @@ def nowcasting(XX):
 
 # 本体 -------------------------------------------------------------------------------------
 st.title('景気ナウキャスティング')
-
 st.sidebar.write("""Googleトレンドによる景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
+
 
 # Set time series dataset
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
@@ -270,20 +270,6 @@ y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
-st.write(f"""### 景気動向指数の推移""")
-fig = plt.figure()
-ax = fig.add_subplot(1, 2, 1)
-ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
-ax.legend()
-ax = fig.add_subplot(2, 2, 2)
-ax.plot(data1.index, data1.iloc[:,1], linestyle='-', color='b', label='Trend')
-ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
-ax.legend()
-ax = fig.add_subplot(2, 2, 4)
-ax.plot(data2.index, data2.iloc[:,1], linestyle='-', color='b', label='Trend')
-ax.plot(data2.index, data2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
-ax.legend()
-st.pyplot(fig)
 
 st.write(f"""### 「{kw1}」のグーグルトレンド""")
 fig = plt.figure()
@@ -291,12 +277,13 @@ ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
 ax = fig.add_subplot(2, 1, 2)
-ax.plot(data2.index, data2.iloc[:,1], linestyle='-', color='b', label='Trend')
-ax.plot(data2.index, data2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
+ax.plot(data1.index, data1.iloc[:,1], linestyle='-', color='b', label='Trend')
+ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
 ax.legend()
 st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
+
 
 st.write(f"""### 「{kw2}」のグーグルトレンド""")
 fig = plt.figure()
