@@ -346,8 +346,8 @@ if st.button('推計開始'):
   st.write(f"""### 推計された週次の景気動向指数""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
-  ax.plot(df_concat.index, past_estimate, linestyle='-', color='b', label='Weekly Data')
-  ax.plot(df_concat.index, future_estimate, linestyle='--', color='#e46409', label='Nowcasting')
+  ax.plot(past_estimate.index, past_estimate, linestyle='-', color='b', label='Weekly IBC')
+  ax.plot(future_estimate.index, future_estimate, linestyle='--', color='#e46409', label='Nowcasting')
   ax.legend()
   st.pyplot(fig)
 
