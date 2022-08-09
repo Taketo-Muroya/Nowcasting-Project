@@ -178,23 +178,25 @@ def lstm_rnn(features):
 
   single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
 
-  # train the model
-  single_step_history = single_step_model.fit(
-    train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
-    )
+  while test_score < 0.7:
+    
+    # train the model
+    single_step_history = single_step_model.fit(
+      train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
+      )
 
-  # evaluate the model
-  model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
+    # evaluate the model
+    model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
 
-  # visualize the result
-  predict = pd.DataFrame(single_step_model.predict(x_val_single)*data_std[0]+data_mean[0])
-  predict.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
+    # visualize the result
+    predict = pd.DataFrame(single_step_model.predict(x_val_single)*data_std[0]+data_mean[0])
+    predict.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
 
-  actual = pd.DataFrame(y_val_single*data_std[0]+data_mean[0])
-  actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
+    actual = pd.DataFrame(y_val_single*data_std[0]+data_mean[0])
+    actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
 
-  output = pd.merge(predict, actual, on='date')
-  test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
+    output = pd.merge(predict, actual, on='date')
+    test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
 
   return output, test_score, single_step_model
 
@@ -295,10 +297,7 @@ st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
   
-
-
-
-
+# 推計 -------------------------------------------------------------------------------------
 
 if st.button('推計開始１'):
   comment = st.empty()
