@@ -30,8 +30,9 @@ def get_ibc_data(url):
   url_index = url + 'di.html'
   res = requests.get(url_index)
   soup = BeautifulSoup(res.text, 'html.parser')
-  name = soup.find_all('a', {'target': '_blank'})[2].attrs['href']
-  if 'xlsx' in name:
+  name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
+
+  if 'xlsx' in name: # 確報公表時
     input_file_name = url + name
     input_book = pd.ExcelFile(input_file_name)
     input_sheet_name = input_book.sheet_names
@@ -41,8 +42,9 @@ def get_ibc_data(url):
     input_sheet_df['time'] = input_sheet_df['time'].astype('int')
     ibc = input_sheet_df.astype('float')
     ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
-  else:
-    name = soup.find_all('a', {'target': '_blank'})[3].attrs['href']
+
+  else: # 速報公表時
+    name = soup.find_all('a', {'target': '_blank'})[2].attrs['href']
     input_file_name = url + name
     input_book = pd.ExcelFile(input_file_name)
     input_sheet_name = input_book.sheet_names
@@ -278,7 +280,7 @@ y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
-st.dataframe(ts)
+st.write(f"""### 景気動向指数と「{ts.index[-1]}」のGoogle検索数""")
 
 # グーグル検索数のグラフ
 st.write(f"""### 景気動向指数と「{kw1}」のGoogle検索数""")
