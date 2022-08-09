@@ -297,8 +297,6 @@ st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
-#st.dataframe(ts)
-
 
 if st.button('推計開始'):
   comment = st.empty()
@@ -317,6 +315,7 @@ if st.button('推計開始'):
   st.write("Test set score: {:.2f}".format(test_score))
   
   # Get the weekly google trend data
+  st.write(f"""### 「{kw1}」の週次検索数""")
   df1 = weekly_google_trend(kw1)
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
@@ -325,6 +324,7 @@ if st.button('推計開始'):
   ax.legend()
   st.pyplot(fig)
 
+st.write(f"""### 「{kw2}」の週次検索数""")
   df2 = weekly_google_trend(kw2)
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
@@ -342,11 +342,11 @@ if st.button('推計開始'):
   temp4 = temp2.reset_index().set_index('monthly')
   temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
   XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
-  st.dataframe(XX)
+  #st.dataframe(XX)
   
   # Nowcasting
   result = nowcasting(XX)
-  st.dataframe(result)
+  #st.dataframe(result)
 
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
