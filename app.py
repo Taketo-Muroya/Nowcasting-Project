@@ -31,7 +31,7 @@ def get_ibc_data(url):
   res = requests.get(url_index)
   soup = BeautifulSoup(res.text, 'html.parser')
   name = soup.find_all('a', {'target': '_blank'})[2].attrs['href']
-  if 'xlsxkkk' in name:
+  if 'xlsxk' in name:
     input_file_name = url + name
     input_book = pd.ExcelFile(input_file_name)
     input_sheet_name = input_book.sheet_names
