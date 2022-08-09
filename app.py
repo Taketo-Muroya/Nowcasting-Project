@@ -326,14 +326,7 @@ if st.button('推計開始１'):
   ax.plot(output.index, output.iloc[:,0], linestyle='--', color='#e46409', label='Predict')
   ax.legend()
   st.pyplot(fig)
-
   st.write("Test set score: {:.2f}".format(test_score))
-
-  comment.write('推計が完了しました')
-
-if st.button('推計開始２'):
-  comment = st.empty()
-  comment.write('Googleトレンドによる推計を実行しています')
 
   st.write(f"""### 「{kw1}」の週次検索数""")
   fig = plt.figure()
