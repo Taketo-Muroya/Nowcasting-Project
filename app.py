@@ -308,6 +308,7 @@ if st.button('推計開始'):
   ax.plot(output.index, output.iloc[:,1], linestyle='-', color='b', label='Actual')
   ax.plot(output.index, output.iloc[:,0], linestyle='--', color='#e46409', label='Predict')
   ax.legend()
+  plt.xticks(rotation=30) 
   st.pyplot(fig)
   st.write("Test set score: {:.2f}".format(test_score))
 
@@ -347,7 +348,7 @@ if st.button('推計開始'):
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(past_estimate.index, past_estimate, linestyle='-', color='b', label='Weekly IBC')
-  ax.plot(future_estimate.index, future_estimate, linestyle='--', color='#e46409', label='Nowcasting')
+  ax.plot(future_estimate.index, future_estimate, linestyle='-', color='#e46409', label='Nowcasting')
   ax.legend()
   st.pyplot(fig)
 
