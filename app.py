@@ -348,6 +348,11 @@ if st.button('推計開始'):
   # Nowcasting
   result = nowcasting(XX)
   st.dataframe(result)
-  st.line_chart(result)
+
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1)
+  ax.plot(result.index, result, linestyle='-', color='b', label='Trend')
+  ax.legend()
+  st.pyplot(fig)
 
   comment.write('推計が完了しました')
