@@ -30,16 +30,28 @@ def get_ibc_data(url):
   url_index = url + 'di.html'
   res = requests.get(url_index)
   soup = BeautifulSoup(res.text, 'html.parser')
-  name = soup.find_all('a', {'target': '_blank'})[2].attrs['href']
-  input_file_name = url + name
-  input_book = pd.ExcelFile(input_file_name)
-  input_sheet_name = input_book.sheet_names
-  input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
-  input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
-  input_sheet_df = input_sheet_df.rename(columns={'Time (Monthly) Code':'time'})
-  input_sheet_df['time'] = input_sheet_df['time'].astype('int')
-  ibc = input_sheet_df.astype('float')
-  ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+  name = soup.find_all('a', {'target': '_blank'})[1].attrs['href']
+  if 'xlsx' in name:
+    input_file_name = url + name
+    input_book = pd.ExcelFile(input_file_name)
+    input_sheet_name = input_book.sheet_names
+    input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
+    input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
+    input_sheet_df = input_sheet_df.rename(columns={'Time (Monthly) Code':'time'})
+    input_sheet_df['time'] = input_sheet_df['time'].astype('int')
+    ibc = input_sheet_df.astype('float')
+    ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
+  else:
+    name = soup.find_all('a', {'target': '_blank'})[2].attrs['href']
+    input_file_name = url + name
+    input_book = pd.ExcelFile(input_file_name)
+    input_sheet_name = input_book.sheet_names
+    input_sheet_df = input_book.parse(input_sheet_name[0], skiprows=3)
+    input_sheet_df = input_sheet_df.iloc[62:,[0,4]]
+    input_sheet_df = input_sheet_df.rename(columns={'Time (Monthly) Code':'time'})
+    input_sheet_df['time'] = input_sheet_df['time'].astype('int')
+    ibc = input_sheet_df.astype('float')
+    ibc['Coincident ann'] = 100*ibc['Coincident Index'].pct_change(12)
   
   return ibc
 
@@ -182,7 +194,7 @@ def lstm_rnn(features):
   while test_score < 0.5:
     # train the model
     single_step_history = single_step_model.fit(
-      train_data_single, epochs=30, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
+      train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
       )
 
     # evaluate the model
@@ -266,6 +278,8 @@ y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
+st.dataframe(ts)
+
 # グーグル検索数のグラフ
 st.write(f"""### 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
@@ -320,7 +334,7 @@ if st.button('推計開始'):
   df1 = weekly_google_trend(kw1)
   df2 = weekly_google_trend(kw2)
 
-  st.write(f"""### 「{kw1}」&「{kw2}」の検索数（週次）""")
+  st.write(f"""### 「{kw1}」&「{kw2}」のGoogle検索数（週次）""")
   fig = plt.figure()
   ax = fig.add_subplot(2, 1, 1)
   ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend Element')
