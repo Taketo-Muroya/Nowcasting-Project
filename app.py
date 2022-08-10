@@ -323,7 +323,7 @@ st.write("#####  ")
 # 推計 -------------------------------------------------------------------------------------
 if st.button('推計開始'):
   comment = st.empty()
-  comment.write('推計中')
+  comment.write('・・・推計中・・・')
 
   # 月次データによる推計
   output, test_score, single_step_model = lstm_rnn(ts)
@@ -341,7 +341,6 @@ if st.button('推計開始'):
 
   st.write("#####  ")
   st.write("##### 次に、週次のGoogle検索数で景気動向指数をナウキャスティングします。")
-  st.write("#####  ")
 
   # 週次のグーグル検索数の取得
   df1 = weekly_google_trend(kw1)
