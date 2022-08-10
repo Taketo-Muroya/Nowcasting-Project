@@ -300,9 +300,7 @@ st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
-st.write("#####  ")
 st.write('-----------------------------------------------')
-st.write("#####  ")
 
 st.write(f"""##### ● 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
@@ -317,7 +315,8 @@ st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
-st.write("#####  ")
+
+st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
 st.write("#####  ")
 
@@ -339,11 +338,8 @@ if st.button('推計開始'):
   st.pyplot(fig)
   st.write(output.tail().T)
   st.write("Test set score（決定係数）: {:.2f}".format(test_score))
-  st.write("#####  ")
   
   st.write('-----------------------------------------------')
-
-  st.write("#####  ")
   st.write("##### 次に、週次のGoogle検索数で景気動向指数をナウキャスティングします。")
   st.write("#####  ")
 
