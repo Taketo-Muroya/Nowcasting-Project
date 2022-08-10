@@ -384,6 +384,6 @@ if st.button('推計開始'):
   st.pyplot(fig)
   #st.write(df_concat.tail().T)
 
-  st.write('オレンジ色で表示されている部分が、最新のGoogle検索数によってナウキャスティングされた景気動向指数の予測値です。')
+  st.write('##### オレンジ色で表示されている部分が、最新のGoogle検索数によってナウキャスティングされた景気動向指数の予測値です。')
 
   comment.write('推計完了') 
