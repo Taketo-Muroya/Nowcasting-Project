@@ -255,8 +255,7 @@ def nowcasting(XX):
       dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
-    XX.columns=['景気動向指数', '検索', '数']
-    # f'{kw1}', f'{kw2}']
+    XX.columns=['景気動向指数', f'{kw1}', f'{kw2}']
     st.write(XX.tail(8))
     st.write('-----------------------------------------------')
 
@@ -349,6 +348,10 @@ if st.button('推計開始'):
   ax.plot(df2.index, df2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
   ax.legend()
   st.pyplot(fig)
+
+  st.write("#####  ")
+  st.write("##### ●以下、推計プロセス。")
+  st.write("#####  ")
 
   # 週次の景気動向指数とグーグル検索数の統合
   temp1 = ts
