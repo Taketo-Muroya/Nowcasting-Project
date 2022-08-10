@@ -281,7 +281,6 @@ y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
-#st.write(f"""##### 景気動向指数の最新月は{ts.index[-1]}""")
 
 st.write("#####  ")
 st.write("##### まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードは左の記入欄から変更することができます。")
@@ -301,6 +300,8 @@ st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
+st.write("#####  ")
+st.write('-----------------------------------------------')
 st.write("#####  ")
 
 st.write(f"""##### ● 景気動向指数と「{kw2}」のGoogle検索数""")
@@ -338,9 +339,13 @@ if st.button('推計開始'):
   st.pyplot(fig)
   st.write(output.tail().T)
   st.write("Test set score（決定係数）: {:.2f}".format(test_score))
+  st.write("#####  ")
+  
+  st.write('-----------------------------------------------')
 
   st.write("#####  ")
   st.write("##### 次に、週次のGoogle検索数で景気動向指数をナウキャスティングします。")
+  st.write("#####  ")
 
   # 週次のグーグル検索数の取得
   df1 = weekly_google_trend(kw1)
