@@ -224,7 +224,7 @@ def nowcasting(XX):
   dataset = (dataset-data_mean)/data_std
 
   # create the test data
-  past_history = 3
+  past_history = 1
   future_target = 0
   STEP = 1
   x_single, y_single = multivariate_data(
@@ -253,8 +253,8 @@ def nowcasting(XX):
       dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
-    #st.write(XX.tail(10))
-    #st.write('-----------------------------------------------')
+    st.write(XX.tail(10))
+    st.write('-----------------------------------------------')
 
   # save the output
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
