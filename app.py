@@ -284,10 +284,8 @@ ts = ts.drop('Coincident ann', axis=1)
 #st.write(f"""##### 景気動向指数の最新月は{ts.index[-1]}""")
 
 # グーグル検索数のグラフ
+st.write(f"""##### 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
-fig.rcParams['font.family'] = 'IPAexGothic'
-#fontname='MS Gothic'
-fig.suptitle(f"""### 景気動向指数と「{kw1}」のGoogle検索数""")
 ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
@@ -299,7 +297,7 @@ st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
-st.write(f"""### 景気動向指数と「{kw2}」のGoogle検索数""")
+st.write(f"""##### 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
@@ -320,7 +318,7 @@ if st.button('推計開始'):
   # 月次データによる推計
   output, test_score, single_step_model = lstm_rnn(ts)
 
-  st.write(f"""### 推計された景気動向指数""")
+  st.write(f"""##### 推計された景気動向指数""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(output.index, output.iloc[:,1], linestyle='-', color='b', label='Actual')
@@ -339,7 +337,7 @@ if st.button('推計開始'):
   df1 = weekly_google_trend(kw1)
   df2 = weekly_google_trend(kw2)
 
-  st.write(f"""### 「{kw1}」&「{kw2}」のGoogle検索数（週次）""")
+  st.write(f"""##### 「{kw1}」&「{kw2}」のGoogle検索数（週次）""")
   fig = plt.figure()
   ax = fig.add_subplot(2, 1, 1)
   ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend Element')
@@ -367,7 +365,7 @@ if st.button('推計開始'):
 
   # Nowcasting
   past_estimate, future_estimate, df_concat = nowcasting(XX)
-  st.write(f"""### 推計された景気動向指数（週次）""")
+  st.write(f"""##### 推計された景気動向指数（週次）""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(past_estimate.index, past_estimate, linestyle='-', color='b', label='Weekly IBC')
