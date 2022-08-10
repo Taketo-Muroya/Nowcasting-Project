@@ -365,5 +365,6 @@ if st.button('推計開始'):
   ax.plot(future_estimate.index, future_estimate, linestyle='-', color='#e46409', label='Nowcasting')
   ax.legend()
   st.pyplot(fig)
+  st.dataframe(df_concat.tail().T)
 
   comment.write('推計が完了しました。')
