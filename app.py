@@ -63,7 +63,7 @@ def get_ibc_data(url):
 def google_trend(kw):
   #@st.cache
   kw_list = [kw]
-  pytrends.build_payload(kw_list, timeframe=f'{start} {end}', geo='JP')
+  pytrends.build_payload(kw_list, timeframe='all' geo='JP')
   gt = pytrends.interest_over_time()
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
 
@@ -273,12 +273,16 @@ st.sidebar.write("""Google検索数による景気予測ツールです。検索
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("どの期間からのデータを使用しますか？", datetime.date(2004, 1, 1))
-end = st.sidebar.date_input("どの期間からのデータを使用しますか？", datetime.date.today())
+end = st.sidebar.date_input("どの期間までのデータを使用しますか？", datetime.date.today())
 
 # 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 data2, cor_level2, cor_ann2 = google_trend(kw2)
+
+data1 = data1[data1['date'] > start]
+st.dataframe(data1)
+
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 y = ibc[228:]
 y = y.set_index('time')
