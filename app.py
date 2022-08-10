@@ -16,10 +16,10 @@ from pytrends.request import TrendReq
 from statsmodels.tsa.seasonal import seasonal_decompose
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
+from sklearn.metrics import r2_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import mean_squared_error
-from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 
 # API Connection
@@ -162,7 +162,7 @@ def lstm_rnn(features):
   dataset = (dataset-data_mean)/data_std
 
   # create the training and test data
-  past_history = 3
+  past_history = 1
   future_target = 0
   STEP = 1
 
@@ -366,4 +366,3 @@ if st.button('推計開始'):
   st.pyplot(fig)
 
   comment.write('推計が完了しました。')
-  
