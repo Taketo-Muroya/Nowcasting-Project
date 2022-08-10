@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import statsmodels.api as sm
 import requests
-import datetime
+
+from datetime import datetime, date, time
 
 from math import sqrt
 from bs4 import BeautifulSoup
@@ -327,8 +328,8 @@ st.write("##### 推計開始ボタンを押すと、Google検索数を用いて�
 st.write("#####  ")
 
 ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
-#ts.index = ts.index.date()
-ts.index = pd.to_datetime(ts.index).date()
+ts.index = ts.index.date()
+#ts.index = pd.to_datetime(ts.index).date()
 st.dataframe(ts)
 
 # 推計 -------------------------------------------------------------------------------------
