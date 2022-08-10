@@ -74,6 +74,7 @@ def google_trend(kw):
   #a = pd.DataFrame(a).rename(columns = {"variable":f"{kw}-YoY"})
   temp = pd.merge(gt.iloc[:,0], t, on='date')
   data = pd.merge(temp, a, on='date')
+  data = data[(data.index >= pd.to_datetime(start)) & (data.index <= pd.to_datetime(end))]
 
   # Check correlation
   level = ibc['Coincident Index'][228:]
@@ -279,6 +280,8 @@ end = st.sidebar.date_input("どの期間までのデータを使用しますか
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 data2, cor_level2, cor_ann2 = google_trend(kw2)
+
+st.dataframe(data1)
 
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 y = ibc[228:]
