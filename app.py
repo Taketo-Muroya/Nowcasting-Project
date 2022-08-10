@@ -1,6 +1,5 @@
 
 # 設定 -------------------------------------------------------------------------------------
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -22,11 +21,13 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
 
-# API Connection
+# フォント設定
 plt.rcParams['font.family'] = 'IPAexGothic'
+
+# API Connection
 pytrends = TrendReq(hl='ja-JP', tz=360)
 
-# ここから関数
+# 関数 -------------------------------------------------------------------------------------
 def get_ibc_data(url):
   url_index = url + 'di.html'
   res = requests.get(url_index)
@@ -153,7 +154,7 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
 
 def lstm_rnn(features):
   # set training percentage
-  TRAIN_SPLIT = round(0.8*len(features))
+  TRAIN_SPLIT = round(0.7*len(features))
 
   # feature scaling
   dataset = features.values
@@ -224,7 +225,7 @@ def nowcasting(XX):
   dataset = (dataset-data_mean)/data_std
 
   # create the test data
-  past_history = 1
+  past_history = 3
   future_target = 0
   STEP = 1
   x_single, y_single = multivariate_data(
@@ -365,6 +366,6 @@ if st.button('推計開始'):
   ax.plot(future_estimate.index, future_estimate, linestyle='-', color='#e46409', label='Nowcasting')
   ax.legend()
   st.pyplot(fig)
-  st.write(df_concat.tail().T)
+  #st.write(df_concat.tail().T)
 
   comment.write('推計が完了しました。')
