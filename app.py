@@ -280,7 +280,7 @@ ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 data2, cor_level2, cor_ann2 = google_trend(kw2)
 
-data1 = data1[data1['date'] > start]
+data1 = data1[data1['date'] > datetime.date(2004, 1, 1)]
 st.dataframe(data1)
 
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
