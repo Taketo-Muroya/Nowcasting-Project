@@ -284,7 +284,7 @@ ts = ts.drop('Coincident ann', axis=1)
 #st.write(f"""##### 景気動向指数の最新月は{ts.index[-1]}""")
 
 st.write("#####  ")
-st.write("##### ●選択した検索ワードのGoogle検索数と景気動向指数の相関関係を確認します。")
+st.write("##### ●まず、景気動向指数とGoogle検索数の相関関係を確認します。")
 st.write("#####  ")
 
 # グーグル検索数のグラフ
