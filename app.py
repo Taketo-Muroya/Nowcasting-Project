@@ -271,7 +271,6 @@ def nowcasting(XX):
 st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
-st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 d = st.date_input("どの期間からのデータを使用しますか？", datetime.date(2004, 1, 1))
 st.write('Your birthday is:', d)
 
