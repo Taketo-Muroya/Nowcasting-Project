@@ -292,11 +292,6 @@ st.write("#####  ")
 st.write("##### まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードは左の記入欄から変更することができます。")
 st.write("#####  ")
 
-from datetime import datetime
-dt = datetime.now()
-st.write(dt)
-st.write(dt.date())
-
 # グーグル検索数のグラフ
 st.write(f"""##### ● 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
@@ -330,6 +325,11 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
 st.write("#####  ")
+
+from datetime import datetime
+dt = datetime.now()
+st.write(ts.index)
+st.write(ts.index.date())
 
 ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
 #ts.index = ts.index.datatime.date()
