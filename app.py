@@ -332,10 +332,11 @@ st.write(ts)
 st.write(ts.index)
 st.write(ts.index.date())
 
-ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
+ts = ts[ts.index > start]
+#ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
 #ts.index = ts.index.datatime.date()
 #ts.index = pd.to_datetime(ts.index).date()
-#st.dataframe(datatime.date(ts.index))
+st.dataframe(ts)
 
 # 推計 -------------------------------------------------------------------------------------
 if st.button('推計開始'):
