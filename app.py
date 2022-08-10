@@ -287,12 +287,12 @@ y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
-#data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
-#data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
-#ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
-data1 = data1[data1.index >= pd.to_datetime(start)]
-data2 = data2[data2.index >= pd.to_datetime(start)]
-ts = ts[ts.index >= pd.to_datetime(start)]
+data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
+data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
+ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
+#data1 = data1[data1.index >= pd.to_datetime(start)]
+#data2 = data2[data2.index >= pd.to_datetime(start)]
+#ts = ts[ts.index >= pd.to_datetime(start)]
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
