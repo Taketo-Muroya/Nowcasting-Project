@@ -61,7 +61,7 @@ def get_ibc_data(url):
   return ibc
 
 def google_trend(kw):
-  @st.cache
+  #@st.cache
   kw_list = [kw]
   pytrends.build_payload(kw_list, timeframe='all', geo='JP')
   gt = pytrends.interest_over_time()
