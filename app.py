@@ -284,11 +284,11 @@ ts = ts.drop('Coincident ann', axis=1)
 #st.write(f"""##### 景気動向指数の最新月は{ts.index[-1]}""")
 
 st.write("#####  ")
-st.write("##### ● まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードは左の記入欄から変更することができます。")
+st.write("##### まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードは左の記入欄から変更することができます。")
 st.write("#####  ")
 
 # グーグル検索数のグラフ
-st.write(f"""##### 景気動向指数と「{kw1}」のGoogle検索数""")
+st.write(f"""##### ● 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
@@ -303,7 +303,7 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
 st.write("#####  ")
 
-st.write(f"""##### 景気動向指数と「{kw2}」のGoogle検索数""")
+st.write(f"""##### ● 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
@@ -317,7 +317,7 @@ st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 st.write("#####  ")
-st.write("##### ● 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
+st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
 st.write("#####  ")
 
 # 推計 -------------------------------------------------------------------------------------
@@ -329,10 +329,10 @@ if st.button('推計開始'):
   output, test_score, single_step_model = lstm_rnn(ts)
 
   st.write("#####  ")
-  st.write("##### ● 推計結果を確認してください。")
+  st.write("##### 推計結果を確認してください。")
   st.write("#####  ")
 
-  st.write(f"""##### 推計された景気動向指数""")
+  st.write(f"""##### ● 推計された景気動向指数""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(output.index, output.iloc[:,1], linestyle='-', color='b', label='Actual')
@@ -344,7 +344,7 @@ if st.button('推計開始'):
   st.write("Test set score（決定係数）: {:.2f}".format(test_score))
 
   st.write("#####  ")
-  st.write("##### ● 次に、週次のGoogle検索数で景気動向指数をナウキャスティングします。")
+  st.write("##### 次に、週次のGoogle検索数で景気動向指数をナウキャスティングします。")
   st.write("#####  ")
 
   # 週次のグーグル検索数の取得
@@ -364,7 +364,7 @@ if st.button('推計開始'):
   st.pyplot(fig)
 
   st.write("#####  ")
-  st.write("##### ● 以下、推計プロセス。")
+  st.write("##### 以下、推計プロセス。")
   st.write("#####  ")
 
   # 週次の景気動向指数とグーグル検索数の統合
@@ -379,7 +379,7 @@ if st.button('推計開始'):
 
   # Nowcasting
   past_estimate, future_estimate, df_concat = nowcasting(XX)
-  st.write(f"""##### 推計された景気動向指数（週次）""")
+  st.write(f"""##### ● 推計された景気動向指数（週次）""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(past_estimate.index, past_estimate, linestyle='-', color='b', label='Weekly IBC')
