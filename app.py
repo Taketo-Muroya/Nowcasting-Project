@@ -195,7 +195,7 @@ def lstm_rnn(features):
   single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
 
   test_score = 0
-  while test_score < 0.8:
+  while test_score < 0.1:
     # train the model
     single_step_history = single_step_model.fit(
       train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
