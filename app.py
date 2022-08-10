@@ -292,6 +292,10 @@ st.write("#####  ")
 st.write("##### まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードは左の記入欄から変更することができます。")
 st.write("#####  ")
 
+from datetime import datetime
+dt = datetime.now()
+st.write(dt.date())
+
 # グーグル検索数のグラフ
 st.write(f"""##### ● 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
@@ -329,7 +333,7 @@ st.write("#####  ")
 ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
 #ts.index = ts.index.datatime.date()
 #ts.index = pd.to_datetime(ts.index).date()
-st.dataframe(datatime.date(ts.index))
+#st.dataframe(datatime.date(ts.index))
 
 # 推計 -------------------------------------------------------------------------------------
 if st.button('推計開始'):
