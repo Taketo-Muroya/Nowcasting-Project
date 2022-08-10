@@ -1,5 +1,9 @@
 
 # 設定 -------------------------------------------------------------------------------------
+
+[theme]
+font="MS Gothic"
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -22,8 +26,7 @@ from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
 
 # API Connection
-#plt.rcParams['font.family'] = 'IPAexGothic'
-plt.rcParams['font.family'] = "MS Gothic"
+plt.rcParams['font.family'] = 'IPAexGothic'
 pytrends = TrendReq(hl='ja-JP', tz=360)
 
 # ここから関数
