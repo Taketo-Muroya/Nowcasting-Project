@@ -273,8 +273,8 @@ def nowcasting(XX):
 st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
-start = st.sidebar.date_input("どの期間からのデータを使用しますか？", datetime.date(2004, 1, 1))
-end = st.sidebar.date_input("どの期間までのデータを使用しますか？", datetime.date.today())
+start = st.sidebar.date_input("どの期間からのデータを使用しますか？", date.date(2004, 1, 1))
+end = st.sidebar.date_input("どの期間までのデータを使用しますか？", date.date.today())
 
 # 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
