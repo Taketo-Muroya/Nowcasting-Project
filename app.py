@@ -272,7 +272,7 @@ def nowcasting(XX):
 st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
-start = st.sidebar.date_input("どの期間からのデータを使用しますか？", datetime.datetime(2004, 1, 1))
+start = st.sidebar.date_input("どの期間からのデータを使用しますか？", datetime.datetime(2010, 1, 1))
 end = st.sidebar.date_input("どの期間までのデータを使用しますか？", datetime.datetime.today())
 
 # 景気動向指数とグーグル検索数の統合
@@ -326,8 +326,8 @@ st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
 st.write("#####  ")
 
-#ts = ts[ts.index > start]
-ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
+ts = ts[ts.index > start]
+#ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
 #ts.index = ts.index.datatime.date()
 #ts.index = pd.to_datetime(ts.index).date()
 st.dataframe(ts)
