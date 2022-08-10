@@ -329,7 +329,7 @@ st.write("#####  ")
 ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
 #ts.index = ts.index.datatime.date()
 #ts.index = pd.to_datetime(ts.index).date()
-st.dataframe(ts.index.datetime.date())
+st.dataframe(datatime.date(ts.index))
 
 # 推計 -------------------------------------------------------------------------------------
 if st.button('推計開始'):
