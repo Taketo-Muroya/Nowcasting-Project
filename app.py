@@ -255,7 +255,7 @@ def nowcasting(XX):
       dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
-    XX.columns=['景気動向指数', f'{kw1}', f'{kw2}']
+    XX.columns=['景気動向指数', f'{kw1}の検索数', f'{kw2}の検索数']
     st.write(XX.tail(8))
     st.write('-----------------------------------------------')
 
