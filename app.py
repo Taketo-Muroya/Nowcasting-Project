@@ -294,6 +294,7 @@ st.write("#####  ")
 
 from datetime import datetime
 dt = datetime.now()
+st.write(dt)
 st.write(dt.date())
 
 # グーグル検索数のグラフ
