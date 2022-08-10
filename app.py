@@ -327,7 +327,7 @@ st.write("##### 推計開始ボタンを押すと、Google検索数を用いて�
 st.write("#####  ")
 
 ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
-ts = ts.index.date()
+ts.index = ts.index.date()
 st.dataframe(ts)
 
 # 推計 -------------------------------------------------------------------------------------
