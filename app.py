@@ -194,7 +194,7 @@ def lstm_rnn(features):
   single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
 
   test_score = 0
-  while test_score < 0.5:
+  while test_score < 0.8:
     # train the model
     single_step_history = single_step_model.fit(
       train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
@@ -325,10 +325,10 @@ if st.button('推計開始'):
   plt.xticks(rotation=30) 
   st.pyplot(fig)
   st.write(output.tail().T)
-  st.write("Test set score: {:.2f}".format(test_score))
+  st.write("Test set score（決定係数）: {:.2f}".format(test_score))
 
   st.write("#####  ")
-  st.write("##### 次に週次のGoogle検索数で景気動向指数をナウキャスティングします。")
+  st.write("##### ●次に週次のGoogle検索数で景気動向指数をナウキャスティングします。")
   st.write("#####  ")
 
   # 週次のグーグル検索数の取得
