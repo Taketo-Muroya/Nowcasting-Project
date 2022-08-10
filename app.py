@@ -272,9 +272,7 @@ st.sidebar.write("""Google検索数による景気予測ツールです。検索
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
-d = st.date_input(
-     "When's your birthday",
-     datetime.date(2004, 1, 1))
+d = st.date_input("どの期間からのデータを使用しますか？", datetime.date(2004, 1, 1))
 st.write('Your birthday is:', d)
 
 # 景気動向指数とグーグル検索数の統合
@@ -288,7 +286,9 @@ y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
-st.dataframe(ts)
+st.dataframe(ts.head())
+
+
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
