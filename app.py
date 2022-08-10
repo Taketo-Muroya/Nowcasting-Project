@@ -255,13 +255,14 @@ def nowcasting(XX):
       dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
-    st.write(XX.tail(10))
+    XX.columns=['景気動向指数', '検索', '数']
+    # f'{kw1}', f'{kw2}']
+    st.write(XX.tail(8))
     st.write('-----------------------------------------------')
 
   # save the output
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
   df_concat = pd.concat([past_estimate.set_axis(['Coincident Index'], axis='columns'), future_estimate])
-  df_concat.columns=['景気動向指数', f'{kw1}', f'{kw2}']
 
   return past_estimate, future_estimate, df_concat
 
