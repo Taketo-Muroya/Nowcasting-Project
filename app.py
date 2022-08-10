@@ -284,12 +284,11 @@ ts = ts.drop('Coincident ann', axis=1)
 st.write(f"""### 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
-ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='景気動向指数')
-plt.legend(prop = {"family" : "MS Gothic"})
-
+ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
+ax.legend()
 ax = fig.add_subplot(2, 1, 2)
-ax.plot(data1.index, data1.iloc[:,1], linestyle='-', color='b', label='トレンド成分')
-ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='Google検索数')
+ax.plot(data1.index, data1.iloc[:,1], linestyle='-', color='b', label='Trend Element')
+ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
 ax.legend()
 st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
@@ -367,3 +366,4 @@ if st.button('推計開始'):
   st.pyplot(fig)
 
   comment.write('推計が完了しました。')
+  
