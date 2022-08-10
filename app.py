@@ -261,6 +261,7 @@ def nowcasting(XX):
   # save the output
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
   df_concat = pd.concat([past_estimate.set_axis(['Coincident Index'], axis='columns'), future_estimate])
+  df_concat.columns=['景気動向指数', kw1, kw2]
 
   return past_estimate, future_estimate, df_concat
 
