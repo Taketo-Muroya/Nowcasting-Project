@@ -330,7 +330,6 @@ from datetime import datetime
 dt = datetime.now()
 st.write(ts)
 st.write(ts.index)
-st.write(ts.index.date())
 
 ts = ts[ts.index > start]
 #ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
