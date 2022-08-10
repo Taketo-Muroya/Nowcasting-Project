@@ -284,7 +284,7 @@ ts = ts.drop('Coincident ann', axis=1)
 #st.write(f"""##### 景気動向指数の最新月は{ts.index[-1]}""")
 
 st.write("#####  ")
-st.write("##### ● まず、景気動向指数とGoogle検索数の相関関係を確認します。")
+st.write("##### ● まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードは左の記入欄から変更することができます。")
 st.write("#####  ")
 
 # グーグル検索数のグラフ
@@ -302,7 +302,6 @@ st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
 st.write("#####  ")
-st.write("#####  ")
 
 st.write(f"""##### 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
@@ -318,13 +317,13 @@ st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
 st.write("#####  ")
-st.write("##### ● 推計開始ボタンを押すと実際の推計作業が始まります。")
+st.write("##### ● 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
 st.write("#####  ")
 
 # 推計 -------------------------------------------------------------------------------------
 if st.button('推計開始'):
   comment = st.empty()
-  comment.write('Google検索数を用いて景気動向指数を推計しています。')
+  comment.write('推計中')
 
   # 月次データによる推計
   output, test_score, single_step_model = lstm_rnn(ts)
@@ -389,4 +388,4 @@ if st.button('推計開始'):
   st.pyplot(fig)
   #st.write(df_concat.tail().T)
 
-  comment.write('推計が完了しました。')
+  comment.write('推計完了') 
