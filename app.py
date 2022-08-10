@@ -280,9 +280,6 @@ ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 data2, cor_level2, cor_ann2 = google_trend(kw2)
 
-data1 = data1[data1['date'] > datetime.date(2004, 1, 1)]
-st.dataframe(data1)
-
 X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 y = ibc[228:]
 y = y.set_index('time')
@@ -328,6 +325,9 @@ st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
 st.write("#####  ")
+
+ts = ts[ts['date'] > datetime.date(2010, 1, 1)]
+st.dataframe(ts)
 
 # 推計 -------------------------------------------------------------------------------------
 if st.button('推計開始'):
