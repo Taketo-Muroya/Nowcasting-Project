@@ -285,7 +285,7 @@ ts = ts.drop('Coincident ann', axis=1)
 
 # グーグル検索数のグラフ
 fig = plt.figure()
-fig.suptitle(f"""### 景気動向指数と「{kw1}」のGoogle検索数""")
+fig.suptitle(f"""### 景気動向指数と「{kw1}」のGoogle検索数""", fontname='MS Gothic')
 ax = fig.add_subplot(2, 1, 1)
 ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
