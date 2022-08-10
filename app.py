@@ -74,7 +74,6 @@ def google_trend(kw):
   #a = pd.DataFrame(a).rename(columns = {"variable":f"{kw}-YoY"})
   temp = pd.merge(gt.iloc[:,0], t, on='date')
   data = pd.merge(temp, a, on='date')
-  data = data[(data.index >= pd.to_datetime(start)) & (data.index <= pd.to_datetime(end))]
 
   # Check correlation
   level = ibc['Coincident Index'][228:]
@@ -281,7 +280,16 @@ ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 data2, cor_level2, cor_ann2 = google_trend(kw2)
 
-st.dataframe(data1)
+X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
+y = ibc[228:]
+y = y.set_index('time')
+y.index = X[:len(ibc)-228].index
+ts = pd.merge(y, X, on='date')
+ts = ts.drop('Coincident ann', axis=1)
+
+data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
+data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
+ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
@@ -316,13 +324,6 @@ ax.legend()
 st.pyplot(fig)
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
-
-X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
-y = ibc[228:]
-y = y.set_index('time')
-y.index = X[:len(ibc)-228].index
-ts = pd.merge(y, X, on='date')
-ts = ts.drop('Coincident ann', axis=1)
 
 st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
