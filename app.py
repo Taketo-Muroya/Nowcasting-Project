@@ -255,7 +255,7 @@ def nowcasting(XX):
       dataset, dataset[:,0], 0, None, past_history, future_target, STEP, single_step=True)
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
-    XX.columns=['景気動向指数', f'{kw1}の検索数', f'{kw2}の検索数']
+    XX.columns=['景気動向指数', f'{kw1}のトレンド', f'{kw2}のトレンド']
     st.write(XX.tail(8))
     st.write('-----------------------------------------------')
 
@@ -328,10 +328,6 @@ if st.button('推計開始'):
   # 月次データによる推計
   output, test_score, single_step_model = lstm_rnn(ts)
 
-  st.write("#####  ")
-  st.write("##### 推計結果を確認してください。")
-  st.write("#####  ")
-
   st.write(f"""##### ● 推計された景気動向指数""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
@@ -351,7 +347,7 @@ if st.button('推計開始'):
   df1 = weekly_google_trend(kw1)
   df2 = weekly_google_trend(kw2)
 
-  st.write(f"""##### 「{kw1}」&「{kw2}」のGoogle検索数（週次）""")
+  st.write(f"""##### ● 「{kw1}」&「{kw2}」のGoogle検索数（週次）""")
   fig = plt.figure()
   ax = fig.add_subplot(2, 1, 1)
   ax.plot(df1.index, df1.iloc[:,1], linestyle='-', color='b', label='Trend Element')
