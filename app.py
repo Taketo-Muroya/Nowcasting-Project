@@ -328,6 +328,7 @@ st.write("#####  ")
 
 from datetime import datetime
 dt = datetime.now()
+st.write(ts)
 st.write(ts.index)
 st.write(ts.index.date())
 
