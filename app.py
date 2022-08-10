@@ -61,7 +61,7 @@ def get_ibc_data(url):
   return ibc
 
 def google_trend(kw):
-  #@st.cache
+  @st.cache
   kw_list = [kw]
   pytrends.build_payload(kw_list, timeframe='all', geo='JP')
   gt = pytrends.interest_over_time()
@@ -272,8 +272,8 @@ def nowcasting(XX):
 st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
-d = st.date_input("どの期間からのデータを使用しますか？", datetime.date(2004, 1, 1))
-st.write('Your birthday is:', d)
+start = st.sidebar.date_input("どの期間からのデータを使用しますか？", datetime.date(2004, 1, 1))
+end = st.sidebar.date_input("どの期間からのデータを使用しますか？", datetime.date,today())
 
 # 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
@@ -285,10 +285,6 @@ y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
-
-st.dataframe(ts.head())
-
-
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
