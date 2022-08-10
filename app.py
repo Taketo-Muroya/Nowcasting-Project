@@ -266,10 +266,16 @@ def nowcasting(XX):
   return past_estimate, future_estimate, df_concat
 
 # 本体 -------------------------------------------------------------------------------------
-st.title('景気ナウキャスティング')
+
+# サイドバー
 st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
+st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
+d = st.date_input(
+     "When's your birthday",
+     datetime.date(2004, 1, 1))
+st.write('Your birthday is:', d)
 
 # 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
@@ -282,6 +288,9 @@ y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 ts = ts.drop('Coincident ann', axis=1)
 
+st.dataframe(ts)
+
+st.title('景気ナウキャスティング')
 st.write("#####  ")
 st.write("##### まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードは左の記入欄から変更することができます。")
 st.write("#####  ")
