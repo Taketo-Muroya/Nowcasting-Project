@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import statsmodels.api as sm
 import requests
+import datetime
 
 from math import sqrt
 from bs4 import BeautifulSoup
