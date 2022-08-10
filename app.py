@@ -211,6 +211,7 @@ def lstm_rnn(features):
     actual.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
 
     output = pd.merge(predict, actual, on='date')
+    output.columns=['予測値', '実績値']
     test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
 
   return output, test_score, single_step_model
