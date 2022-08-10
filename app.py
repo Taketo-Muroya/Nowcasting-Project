@@ -323,6 +323,7 @@ if st.button('推計開始'):
   ax.legend()
   plt.xticks(rotation=30) 
   st.pyplot(fig)
+  st.dataframe(output.tail().T)
   st.write("Test set score: {:.2f}".format(test_score))
 
   st.write("#####  ")
