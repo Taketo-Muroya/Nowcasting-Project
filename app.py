@@ -63,7 +63,7 @@ def get_ibc_data(url):
 def google_trend(kw):
   #@st.cache
   kw_list = [kw]
-  pytrends.build_payload(kw_list, timeframe=all geo='JP')
+  pytrends.build_payload(kw_list, timeframe='all', geo='JP')
   gt = pytrends.interest_over_time()
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
 
