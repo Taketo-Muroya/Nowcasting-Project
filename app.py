@@ -327,7 +327,7 @@ st.write("##### 推計開始ボタンを押すと、Google検索数を用いて�
 st.write("#####  ")
 
 st.write(start)
-ts = ts[ts.index > start]
+ts = ts[ts.index > pd.to_datetime(start)]
 #ts = ts[ts.index > datetime.datetime(2010, 1, 1)]
 #ts.index = ts.index.datatime.date()
 #ts.index = pd.to_datetime(ts.index).date()
