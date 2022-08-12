@@ -268,10 +268,10 @@ kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯�
 start = st.sidebar.date_input("データ開始時期", datetime.datetime(2004, 1, 1))
 end = st.sidebar.date_input("データ終了時期", datetime.datetime.today())
 
-st.write(datetime.datetime.today())
+st.write(datetime.date.today())
 st.write(end)
 
-if end == datetime.datetime.today():
+if end == datetime.date.today():
   st.write(end)
 
 # 景気動向指数とグーグル検索数の統合
