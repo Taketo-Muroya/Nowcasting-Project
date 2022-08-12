@@ -280,19 +280,19 @@ ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1, cor_level1, cor_ann1 = google_trend(kw1)
 data2, cor_level2, cor_ann2 = google_trend(kw2)
 
-X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
+#X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
+X = pd.merge(data1, data2, on='date')
 y = ibc[228:]
 y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
-ts = ts.drop('Coincident ann', axis=1)
+#ts = ts.drop('Coincident ann', axis=1)
 
-data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
-data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
-ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
-#data1 = data1[data1.index >= pd.to_datetime(start)]
-#data2 = data2[data2.index >= pd.to_datetime(start)]
-#ts = ts[ts.index >= pd.to_datetime(start)]
+st.dataframe(ts)
+
+#data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
+#data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
+#ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
