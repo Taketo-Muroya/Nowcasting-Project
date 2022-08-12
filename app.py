@@ -188,7 +188,7 @@ def lstm_rnn(features):
   
   # Set the threshold
   test_score = 0
-  if start == datetime.date(2004, 1, 1) and end == datetime.date.today():
+  if start == datetime.date(2004, 1, 1) and end == datetime.date.today() and kw1 == '失業' and kw2 == '貯金':
     R = 0.8
   else:
     R = -1
