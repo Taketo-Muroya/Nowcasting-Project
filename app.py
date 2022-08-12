@@ -290,9 +290,10 @@ y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 st.dataframe(ts)
-ts.index = datetime.datetime.strptime(ts.index, '%Y-%m-%d %H:%M:%S').strftime('%Y/%m/%d')
+new_date, new_time = ts.index.split()
+#ts.index = datetime.datetime.strptime(ts.index, '%Y-%m-%d %H:%M:%S').strftime('%Y/%m/%d')
 #gt['date'] = pd.to_datetime(gt['date']).datetime.date()
-st.dataframe(ts)
+st.dataframe(new_date)
 
 # データ期間の設定
 ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
