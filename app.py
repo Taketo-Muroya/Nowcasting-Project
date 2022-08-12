@@ -309,7 +309,7 @@ st.pyplot(fig)
 cor_level1 = ts.iloc[:,0].corr(ts.iloc[:,3])
 cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関係数：{:.2f}".format(cor_level1))
-st.write("（前年比の相関係数：{:.2f}".format(cor_ann1)）)
+st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
 
 st.write('-----------------------------------------------')
 
