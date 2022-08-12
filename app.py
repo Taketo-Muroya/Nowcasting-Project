@@ -268,6 +268,9 @@ kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯�
 start = st.sidebar.date_input("データ開始時期", datetime.datetime(2004, 1, 1))
 end = st.sidebar.date_input("データ終了時期", datetime.datetime.today())
 
+print(datetime.datetime.today())
+print(end)
+
 if end == datetime.datetime.today():
   print(end)
 
