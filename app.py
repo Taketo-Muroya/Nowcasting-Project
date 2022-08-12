@@ -78,7 +78,7 @@ def google_trend(kw):
   return data
 
 def weekly_google_trend(kw):
-  # Get the weekly google trend data (unemployment)
+  # Get the weekly google trend data
   kw_list = [kw]
   pytrends.build_payload(kw_list, timeframe='today 5-y', geo='JP')
   #pytrends.build_payload(kw_list, timeframe='2017-01-01 2021-01-16', geo='JP')
@@ -86,7 +86,7 @@ def weekly_google_trend(kw):
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
  
   # Extract trend factor
-  s = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq', period=12)
+  s = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq', period=6)
   t = s.trend
   data = pd.merge(gt.iloc[:,0], t, on='date')
 
@@ -202,7 +202,7 @@ def lstm_rnn(features):
   else:
     # train the model
     single_step_history = single_step_model.fit(
-      train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
+      train_data_single, epochs=20, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
       )
 
     # evaluate the model
@@ -231,7 +231,7 @@ def nowcasting(XX):
   dataset = (dataset-data_mean)/data_std
 
   # create the test data
-  past_history = 1
+  past_history = 3
   future_target = 0
   STEP = 1
   x_single, y_single = multivariate_data(
