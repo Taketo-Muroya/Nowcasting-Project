@@ -349,9 +349,9 @@ if st.button('推計開始'):
   ax.plot(output.index, output.iloc[:,1], linestyle='-', color='b', label='Actual')
   ax.plot(output.index, output.iloc[:,0], linestyle='--', color='#e46409', label='Predict')
   ax.legend()
-  plt.xticks(rotation=30) 
+  #plt.xticks(rotation=30) 
   st.pyplot(fig)
-  st.write(output.tail().T)
+  st.write(output.tail(4).T)
   st.write("Test set score（決定係数）: {:.2f}".format(test_score))
   
   st.write('-----------------------------------------------')
