@@ -292,8 +292,8 @@ ts = pd.merge(y, X, on='date')
 ts = ts.reset_index()
 #new_date, new_time = ts.index.split()
 #ts.index = datetime.datetime.strptime(ts.index, '%Y-%m-%d %H:%M:%S').strftime('%Y/%m/%d')
-ts['date'] = ts['date'].datetime.date()
-st.dataframe(ts)
+#ts['date'] = ts['date'].datetime.date()
+st.write(ts['date'][0])
 
 # データ期間の設定
 ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
