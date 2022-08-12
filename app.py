@@ -289,7 +289,7 @@ y = ibc[228:]
 y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
-st.dataframe(ts.index.iloc[0])
+st.write(ts.index.iloc[0,0])
 #new_date, new_time = ts.index.split()
 #ts.index = datetime.datetime.strptime(ts.index, '%Y-%m-%d %H:%M:%S').strftime('%Y/%m/%d')
 ts.index[0] = pd.to_datetime(ts.index[0]).datetime.date()
