@@ -191,7 +191,7 @@ def lstm_rnn(features):
   if start == datetime.date(2004, 1, 1) and end == datetime.date.today():
     R = 0.8
   else:
-    R = 0.1
+    R = 0
   
   # Run the model
   while test_score < R:
@@ -269,7 +269,7 @@ def nowcasting(XX):
 # 本体 -------------------------------------------------------------------------------------
 
 # サイドバー
-st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
+st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードやデータ期間を記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("データ開始時期", datetime.datetime(2004, 1, 1))
@@ -290,7 +290,7 @@ ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
-st.write("##### まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードは左の記入欄から変更することができます。")
+st.write("##### まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードやデータ期間は左の記入欄から変更することができます。")
 st.write("#####  ")
 
 # グーグル検索数のグラフ
