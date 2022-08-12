@@ -288,11 +288,11 @@ y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
 #ts = ts.drop('Coincident ann', axis=1)
 
-st.dataframe(ts)
-
 #data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
 #data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
 ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
+
+st.dataframe(ts)
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
@@ -303,7 +303,7 @@ st.write("#####  ")
 st.write(f"""##### ● 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
-ax.plot(ts.index, ts[:,0], linestyle='-', color='b', label='Indexes of Business Conditions')
+ax.plot(ts.index, ts.iloc[:,0], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
 ax = fig.add_subplot(2, 1, 2)
 ax.plot(ts.index, ts.iloc[:,2], linestyle='--', color='#e46409', label='Google Search')
@@ -322,7 +322,7 @@ st.write('-----------------------------------------------')
 st.write(f"""##### ● 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
-ax.plot(ts.index, ts[:,0], linestyle='-', color='b', label='Indexes of Business Conditions')
+ax.plot(ts.index, ts.iloc[:,0], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
 ax = fig.add_subplot(2, 1, 2)
 ax.plot(ts.index, ts.iloc[:,5], linestyle='--', color='#e46409', label='Google Search')
