@@ -156,7 +156,7 @@ def lstm_rnn(features):
   dataset = (dataset-data_mean)/data_std
 
   # create the training and test data
-  past_history = 6
+  past_history = 1
   future_target = 0
   STEP = 1
 
@@ -231,7 +231,7 @@ def nowcasting(XX):
   dataset = (dataset-data_mean)/data_std
 
   # create the test data
-  past_history = 3
+  past_history = 1
   future_target = 0
   STEP = 1
   x_single, y_single = multivariate_data(
