@@ -295,7 +295,7 @@ ts = ts.reset_index()
 #ts['date'] = pd.to_datetime(ts['date']).datetime.date()
 #st.write(pd.to_datetime(str(ts['date'][0])).datetime.date())
 st.write(str(ts['date'][0]))
-ts['date'] = datetime.datetime.strptime(ts['date'], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
+ts['date'][0] = datetime.datetime.strptime(str(ts['date'][0]), '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
 st.dataframe(ts)
 
 # データ期間の設定
