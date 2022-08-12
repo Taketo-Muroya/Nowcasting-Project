@@ -346,7 +346,8 @@ if st.button('推計開始'):
   comment.write('・・・推計中・・・')
 
   # 月次データによる推計
-  #ts = ts.drop('Coincident ann', axis=1)
+  ts = ts.drop(ts.columns[[1, 2, 4, 5, 7]], axis=1)
+  st.dataframe(ts)
   output, test_score, single_step_model = lstm_rnn(ts)
 
   st.write(f"""##### ● 推計された景気動向指数""")
