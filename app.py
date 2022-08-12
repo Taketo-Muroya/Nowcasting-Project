@@ -289,7 +289,7 @@ y = ibc[228:]
 y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
-ts.index = ts.index.date()
+ts.index = ts.index.datetime.date()
 st.dataframe(ts)
 
 # データ期間の設定
