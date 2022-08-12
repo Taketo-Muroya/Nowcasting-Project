@@ -231,7 +231,7 @@ def nowcasting(XX):
   dataset = (dataset-data_mean)/data_std
 
   # create the test data
-  past_history = 3
+  past_history = 6
   future_target = 0
   STEP = 1
   x_single, y_single = multivariate_data(
