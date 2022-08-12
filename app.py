@@ -292,7 +292,7 @@ ts = pd.merge(y, X, on='date')
 ts = ts.reset_index()
 #new_date, new_time = ts.index.split()
 #ts.index = datetime.datetime.strptime(ts.index, '%Y-%m-%d %H:%M:%S').strftime('%Y/%m/%d')
-ts['date'] = pd.to_datetime(ts['date']).date()
+ts['date'] = ts['date'].datetime.date()
 st.dataframe(ts)
 
 # データ期間の設定
