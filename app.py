@@ -249,7 +249,7 @@ def nowcasting(XX):
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
     XX.columns=['景気動向指数', f'{kw1}のトレンド', f'{kw2}のトレンド']
-    if end == 'datetime.datetime.today()':
+    if end == datetime.date.today():
       st.write(XX.tail(8))
       st.write('-----------------------------------------------')
 
@@ -267,12 +267,6 @@ kw1 = st.sidebar.text_input('検索ワードを記入してください', '失�
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("データ開始時期", datetime.datetime(2004, 1, 1))
 end = st.sidebar.date_input("データ終了時期", datetime.datetime.today())
-
-st.write(datetime.date.today())
-st.write(end)
-
-if end == datetime.date.today():
-  st.write(end)
 
 # 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
