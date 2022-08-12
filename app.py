@@ -75,14 +75,6 @@ def google_trend(kw):
   temp = pd.merge(gt.iloc[:,0], t, on='date')
   data = pd.merge(temp, a, on='date')
 
-  # Check correlation
-  #level = ibc['Coincident Index'][228:]
-  #level.index = t[:len(ibc)-228].index
-  #cor_level = level.corr(t[:len(ibc)-228])
-  #ann = ibc['Coincident ann'][228:]
-  #ann.index = a[:len(ibc)-228].index
-  #cor_ann = ann.corr(a[:len(ibc)-228])
-
   return data
 
 def weekly_google_trend(kw):
@@ -257,8 +249,9 @@ def nowcasting(XX):
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
     XX.columns=['景気動向指数', f'{kw1}のトレンド', f'{kw2}のトレンド']
-    st.write(XX.tail(8))
-    st.write('-----------------------------------------------')
+    if end == datetime.datetime.today():
+      st.write(XX.tail(8))
+      st.write('-----------------------------------------------')
 
   # save the output
   future_estimate = pd.DataFrame(XX.iloc[END:len(XX)+1,0])
@@ -272,27 +265,21 @@ def nowcasting(XX):
 st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードを記入してください。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
-start = st.sidebar.date_input("どの期間からのデータを使用しますか？", datetime.datetime(2004, 1, 1))
-end = st.sidebar.date_input("どの期間までのデータを使用しますか？", datetime.datetime.today())
+start = st.sidebar.date_input("データ開始時期", datetime.datetime(2004, 1, 1))
+end = st.sidebar.date_input("データ終了時期", datetime.datetime.today())
 
 # 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1 = google_trend(kw1)
 data2 = google_trend(kw2)
-
-#X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 X = pd.merge(data1, data2, on='date')
 y = ibc[228:]
 y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
-#ts = ts.drop('Coincident ann', axis=1)
 
-#data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
-#data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
+# データ期間の設定
 ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
-
-st.dataframe(ts)
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
@@ -311,11 +298,11 @@ ax.plot(ts.index, ts.iloc[:,3], linestyle='-', color='b', label='Trend Element')
 ax.legend()
 st.pyplot(fig)
 
-# Check correlation
+# 相関係数の計算
 cor_level1 = ts.iloc[:,0].corr(ts.iloc[:,3])
 cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
-st.write("水準の相関関数：{:.2f}".format(cor_level1))
-st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
+st.write("水準の相関係数：{:.2f}".format(cor_level1))
+st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
 
 st.write('-----------------------------------------------')
 
@@ -330,11 +317,11 @@ ax.plot(ts.index, ts.iloc[:,6], linestyle='-', color='b', label='Trend Element')
 ax.legend()
 st.pyplot(fig)
 
-# Check correlation
+# 相関係数の計算
 cor_level2 = ts.iloc[:,0].corr(ts.iloc[:,6])
 cor_ann2 = ts.iloc[:,1].corr(ts.iloc[:,7])
-st.write("水準の相関関数：{:.2f}".format(cor_level2))
-st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
+st.write("水準の相関係数：{:.2f}".format(cor_level2))
+st.write("前年比の相関係数：{:.2f}".format(cor_ann2))
 
 st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
@@ -347,7 +334,6 @@ if st.button('推計開始'):
 
   # 月次データによる推計
   ts = ts.drop(ts.columns[[1, 2, 4, 5, 7]], axis=1)
-  st.dataframe(ts)
   output, test_score, single_step_model = lstm_rnn(ts)
 
   st.write(f"""##### ● 推計された景気動向指数""")
