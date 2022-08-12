@@ -249,7 +249,7 @@ def nowcasting(XX):
 
     XX.iat[i,0] = float(single_step_model.predict(x_single)[-1]*data_std[0]+data_mean[0])
     XX.columns=['景気動向指数', f'{kw1}のトレンド', f'{kw2}のトレンド']
-    if end == datetime.datetime.today():
+    if end == 'datetime.datetime.today()':
       st.write(XX.tail(8))
       st.write('-----------------------------------------------')
 
