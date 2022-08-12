@@ -66,7 +66,6 @@ def google_trend(kw):
   pytrends.build_payload(kw_list, timeframe='all', geo='JP')
   gt = pytrends.interest_over_time()
   gt = gt.rename(columns = {kw:"variable", "isPartial":"info"})
-  gt['date'] = pd.to_datetime(gt['date']).datetime.date()
 
   # Extract trend factor and YoY
   t = seasonal_decompose(gt.iloc[:,0], extrapolate_trend='freq', period=12).trend
@@ -290,6 +289,8 @@ y = ibc[228:]
 y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
+ts.index = datetime.datetime.strptime(ts.index, '%Y/%m/%d %H:%M:%S').strftime('%Y/%m/%d')
+#gt['date'] = pd.to_datetime(gt['date']).datetime.date()
 st.dataframe(ts)
 
 # データ期間の設定
