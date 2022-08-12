@@ -290,8 +290,8 @@ ts = pd.merge(y, X, on='date')
 
 st.dataframe(ts)
 
-data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
-data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
+#data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
+#data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
 ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
 
 st.title('景気ナウキャスティング')
@@ -303,11 +303,11 @@ st.write("#####  ")
 st.write(f"""##### ● 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
-ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
+ax.plot(ts.index, ts[:,0], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
 ax = fig.add_subplot(2, 1, 2)
-ax.plot(data1.index, data1.iloc[:,1], linestyle='-', color='b', label='Trend Element')
-ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
+ax.plot(ts.index, ts.iloc[:,2], linestyle='--', color='#e46409', label='Google Search')
+ax.plot(ts.index, ts.iloc[:,3], linestyle='-', color='b', label='Trend Element')
 ax.legend()
 st.pyplot(fig)
 
@@ -322,11 +322,11 @@ st.write('-----------------------------------------------')
 st.write(f"""##### ● 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
-ax.plot(ts.index, ts['Coincident Index'], linestyle='-', color='b', label='Indexes of Business Conditions')
+ax.plot(ts.index, ts[:,0], linestyle='-', color='b', label='Indexes of Business Conditions')
 ax.legend()
 ax = fig.add_subplot(2, 1, 2)
-ax.plot(data2.index, data2.iloc[:,1], linestyle='-', color='b', label='Trend Element')
-ax.plot(data2.index, data2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
+ax.plot(data2.index, data2.iloc[:,5], linestyle='--', color='#e46409', label='Google Search')
+ax.plot(data2.index, data2.iloc[:,6], linestyle='-', color='b', label='Trend Element')
 ax.legend()
 st.pyplot(fig)
 
@@ -346,6 +346,7 @@ if st.button('推計開始'):
   comment.write('・・・推計中・・・')
 
   # 月次データによる推計
+  #ts = ts.drop('Coincident ann', axis=1)
   output, test_score, single_step_model = lstm_rnn(ts)
 
   st.write(f"""##### ● 推計された景気動向指数""")
