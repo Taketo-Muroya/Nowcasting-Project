@@ -309,7 +309,7 @@ st.pyplot(fig)
 cor_level1 = ts.iloc[:,0].corr(ts.iloc[:,3])
 cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関係数：{:.2f}".format(cor_level1))
-st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
+st.write("（前年比の相関係数：{:.2f}".format(cor_ann1)）)
 
 st.write('-----------------------------------------------')
 
@@ -351,7 +351,7 @@ if st.button('推計開始'):
   ax.legend()
   #plt.xticks(rotation=30) 
   st.pyplot(fig)
-  st.write(output.tail(4).T)
+  st.write(output.tail().T)
   st.write("Test set score（決定係数）: {:.2f}".format(test_score))
   
   st.write('-----------------------------------------------')
