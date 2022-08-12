@@ -147,7 +147,7 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
 
 def lstm_rnn(features):
   # set training percentage
-  TRAIN_SPLIT = round(0.7*len(features))
+  TRAIN_SPLIT = round(0.75*len(features))
 
   # feature scaling
   dataset = features.values
