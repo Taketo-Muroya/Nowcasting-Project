@@ -185,9 +185,16 @@ def lstm_rnn(features):
   single_step_model.add(tf.keras.layers.Dense(1))
 
   single_step_model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0001), loss='mae')
-
+  
+  # Set the threshold
   test_score = 0
-  while test_score < 0.1:
+  if start == datetime.date(2004, 1, 1) & end == datetime.date.today():
+    R = 0.8
+  else:
+    R = 0.1
+  
+  # Run the model
+  while test_score < R:
     # train the model
     single_step_history = single_step_model.fit(
       train_data_single, epochs=10, steps_per_epoch=200, validation_data=val_data_single, validation_steps=50
@@ -368,7 +375,8 @@ if st.button('推計開始'):
   st.pyplot(fig)
 
   st.write("#####  ")
-  st.write("##### 以下、推計プロセス。")
+  if end == datetime.date.today():
+    st.write("##### 以下、推計プロセス。")
   st.write("#####  ")
 
   # 週次の景気動向指数とグーグル検索数の統合
