@@ -76,14 +76,14 @@ def google_trend(kw):
   data = pd.merge(temp, a, on='date')
 
   # Check correlation
-  level = ibc['Coincident Index'][228:]
-  level.index = t[:len(ibc)-228].index
-  cor_level = level.corr(t[:len(ibc)-228])
-  ann = ibc['Coincident ann'][228:]
-  ann.index = a[:len(ibc)-228].index
-  cor_ann = ann.corr(a[:len(ibc)-228])
+  #level = ibc['Coincident Index'][228:]
+  #level.index = t[:len(ibc)-228].index
+  #cor_level = level.corr(t[:len(ibc)-228])
+  #ann = ibc['Coincident ann'][228:]
+  #ann.index = a[:len(ibc)-228].index
+  #cor_ann = ann.corr(a[:len(ibc)-228])
 
-  return data, cor_level, cor_ann
+  return data
 
 def weekly_google_trend(kw):
   # Get the weekly google trend data (unemployment)
@@ -277,8 +277,8 @@ end = st.sidebar.date_input("どの期間までのデータを使用しますか
 
 # 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
-data1, cor_level1, cor_ann1 = google_trend(kw1)
-data2, cor_level2, cor_ann2 = google_trend(kw2)
+data1 = google_trend(kw1)
+data2 = google_trend(kw2)
 
 #X = pd.merge(data1.iloc[:,1], data2.iloc[:,1], on='date')
 X = pd.merge(data1, data2, on='date')
@@ -290,9 +290,9 @@ ts = pd.merge(y, X, on='date')
 
 st.dataframe(ts)
 
-#data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
-#data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
-#ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
+data1 = data1[(data1.index >= pd.to_datetime(start)) & (data1.index <= pd.to_datetime(end))]
+data2 = data2[(data2.index >= pd.to_datetime(start)) & (data2.index <= pd.to_datetime(end))]
+ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
 
 st.title('景気ナウキャスティング')
 st.write("#####  ")
@@ -310,6 +310,10 @@ ax.plot(data1.index, data1.iloc[:,1], linestyle='-', color='b', label='Trend Ele
 ax.plot(data1.index, data1.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
 ax.legend()
 st.pyplot(fig)
+
+# Check correlation
+cor_level1 = ts.iloc[:,0].corr(ts.iloc[:,3])
+cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関関数：{:.2f}".format(cor_level1))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann1))
 
@@ -325,6 +329,10 @@ ax.plot(data2.index, data2.iloc[:,1], linestyle='-', color='b', label='Trend Ele
 ax.plot(data2.index, data2.iloc[:,0], linestyle='--', color='#e46409', label='Google Search')
 ax.legend()
 st.pyplot(fig)
+
+# Check correlation
+cor_level2 = ts.iloc[:,0].corr(ts.iloc[:,6])
+cor_ann2 = ts.iloc[:,1].corr(ts.iloc[:,7])
 st.write("水準の相関関数：{:.2f}".format(cor_level2))
 st.write("前年比の相関関数：{:.2f}".format(cor_ann2))
 
