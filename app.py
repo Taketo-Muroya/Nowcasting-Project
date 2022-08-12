@@ -272,8 +272,8 @@ def nowcasting(XX):
 st.sidebar.write("""Google検索数による景気予測ツールです。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
-start = st.sidebar.date_input("データ開始時期", datetime.datetime(2004, 1, 1))
-end = st.sidebar.date_input("データ終了時期", datetime.datetime.today())
+start = st.sidebar.date_input("データ開始時期を設定してください", datetime.datetime(2004, 1, 1))
+end = st.sidebar.date_input("データ終了時期を設定してください", datetime.datetime.today())
 
 # 景気動向指数とグーグル検索数の統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
@@ -304,7 +304,6 @@ ax.plot(ts.index, ts.iloc[:,2], linestyle='--', color='#e46409', label='Google S
 ax.plot(ts.index, ts.iloc[:,3], linestyle='-', color='b', label='Trend Element')
 ax.legend()
 st.pyplot(fig)
-st.dataframe(ts.iloc[:,0:3].tail().T)
 
 # 相関係数の計算
 cor_level1 = ts.iloc[:,0].corr(ts.iloc[:,3])
