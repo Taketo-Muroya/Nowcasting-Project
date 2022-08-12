@@ -191,7 +191,7 @@ def lstm_rnn(features):
   if start == datetime.date(2004, 1, 1) and end == datetime.date.today():
     R = 0.8
   else:
-    R = 0
+    R = -1
   
   # Run the model
   while test_score < R:
@@ -268,15 +268,17 @@ def nowcasting(XX):
 
 # 本体 -------------------------------------------------------------------------------------
 
+ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
+st.write(ibc.iloc[-1,0])
+
 # サイドバー
-st.sidebar.write("""Google検索数による景気予測ツールです。検索ワードやデータ期間を記入してください。""")
+st.sidebar.write("""Google検索数による景気予測ツールです。""")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("データ開始時期", datetime.datetime(2004, 1, 1))
 end = st.sidebar.date_input("データ終了時期", datetime.datetime.today())
 
 # 景気動向指数とグーグル検索数の統合
-ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1 = google_trend(kw1)
 data2 = google_trend(kw2)
 X = pd.merge(data1, data2, on='date')
