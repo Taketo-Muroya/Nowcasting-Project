@@ -414,4 +414,6 @@ if st.button('推計開始'):
 
   st.write('##### オレンジ色で表示されている部分が、最新のGoogle検索数によってナウキャスティングされた景気動向指数の予測値です。')
 
+  st.caption(f'(※) {kw1}と{kw2}の週次のGoogle検索数のトレンド成分と三期前までの週次の景気動向指数を説明変数として、当期の景気動向指数を予測している。モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{df_concat.index[-1]}までの予測が可能となっている。')
+
   comment.write('推計完了') 
