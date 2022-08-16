@@ -317,8 +317,6 @@ cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関係数：{:.2f}".format(cor_level1))
 st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
 
-st.write('-----------------------------------------------')
-
 st.write(f"""##### ● 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
