@@ -289,7 +289,7 @@ y = ibc[228:]
 y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
-latest_date = ts.index[-1].datetime.date()
+latest_date, time = str(ts.index[-1]).split()
 
 # データ期間の設定
 ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
