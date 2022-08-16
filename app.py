@@ -316,7 +316,7 @@ cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関係数：{:.2f}".format(cor_level1))
 st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
 
-st.text('「Indexes of Business Conditions」は景気動向指数の一致指数。公表されている最新月は●月。「Google Search」は実際のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
+st.caption('「Indexes of Business Conditions」は景気動向指数の一致指数。公表されている最新月は●月。「Google Search」は実際のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
 
 st.write('-----------------------------------------------')
 
