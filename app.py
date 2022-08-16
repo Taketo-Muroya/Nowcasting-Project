@@ -413,6 +413,6 @@ if st.button('推計開始'):
 
   latest_week, time = str(df_concat.index[-1]).split()
 
-  st.caption(f'(※) 月次で推計した際の{kw1}と{kw2}のGoogle検索数のトレンド成分と景気動向指数の関係性に対して、週次のGoogle検索数のトレンド成分と三期前までの週次の景気動向指数を当てはめ、景気動向指数（週次）を予測している。モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{latest_week}までの予測が可能となっている。')
+  st.caption(f'(※) 月次で推計した際のGoogle検索数（{kw1}及び{kw2}）のトレンド成分と景気動向指数の関係性に対して、週次のGoogle検索数のトレンド成分と三期前までの週次の景気動向指数を当てはめ、景気動向指数（週次）を予測している。モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{latest_week}までの予測が可能となっている。')
 
   comment.write('推計完了') 
