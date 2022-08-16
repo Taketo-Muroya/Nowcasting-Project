@@ -363,6 +363,8 @@ if st.button('推計開始'):
   st.pyplot(fig)
   st.write(output.tail().T)
   st.write("Test set score（決定係数）: {:.2f}".format(test_score))
+
+  st.caption(f'(※) {kw1}と{kw2}のGoogle検索数のトレンド成分と一期前の景気動向指数を説明変数として、当期の景気動向指数を推計している。モデルはRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。')
   
   st.write('-----------------------------------------------')
   st.write("##### 次に、週次のGoogle検索数で景気動向指数をナウキャスティングします。")
