@@ -317,8 +317,6 @@ cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関係数：{:.2f}".format(cor_level1))
 st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
 
-st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数（公表されている最新月は{latest_date}）。「Google Search」は{kw1}のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
-
 st.write('-----------------------------------------------')
 
 st.write(f"""##### ● 景気動向指数と「{kw2}」のGoogle検索数""")
@@ -338,7 +336,7 @@ cor_ann2 = ts.iloc[:,1].corr(ts.iloc[:,7])
 st.write("水準の相関係数：{:.2f}".format(cor_level2))
 st.write("前年比の相関係数：{:.2f}".format(cor_ann2))
 
-st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数（公表されている最新月は{latest_date}）。「Google Search」は{kw2}のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
+st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数（最新月は{latest_date}が公表されている）。「Google Search」はGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
 
 st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
@@ -364,7 +362,7 @@ if st.button('推計開始'):
   st.write(output.tail().T)
   st.write("Test set score（決定係数）: {:.2f}".format(test_score))
 
-  st.caption(f'(※) {kw1}と{kw2}のGoogle検索数のトレンド成分と一期前の景気動向指数を説明変数として、当期の景気動向指数を推計している。モデルはRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。')
+  st.caption(f'(※) {kw1}と{kw2}のGoogle検索数のトレンド成分と一期前の景気動向指数を用いて、当期の景気動向指数を推計している。モデルはRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。')
   
   st.write('-----------------------------------------------')
   st.write("##### 次に、週次のGoogle検索数で景気動向指数をナウキャスティングします。")
@@ -415,6 +413,6 @@ if st.button('推計開始'):
 
   st.write('##### オレンジ色で表示されている部分が、最新のGoogle検索数によってナウキャスティングされた景気動向指数の予測値です。')
 
-  st.caption(f'(※) {kw1}と{kw2}のGoogle検索数のトレンド成分（週次）と三期前までの景気動向指数（週次）を説明変数として、当期の景気動向指数（週次）を予測している。モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{latest_week}までの予測が可能となっている。')
+  st.caption(f'(※) {kw1}と{kw2}のGoogle検索数のトレンド成分（週次）と三期前までの景気動向指数（週次）を用いて、当期の景気動向指数（週次）を予測している。モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{latest_week}までの予測が可能となっている。')
 
   comment.write('推計完了') 
