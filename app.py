@@ -317,7 +317,7 @@ cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関係数：{:.2f}".format(cor_level1))
 st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
 
-st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数。公表されている最新月は{latest_date}。「Google Search」は{kw1}のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
+st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数（公表されている最新月は{latest_date}）。「Google Search」は{kw1}のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
 
 st.write('-----------------------------------------------')
 
@@ -337,6 +337,8 @@ cor_level2 = ts.iloc[:,0].corr(ts.iloc[:,6])
 cor_ann2 = ts.iloc[:,1].corr(ts.iloc[:,7])
 st.write("水準の相関係数：{:.2f}".format(cor_level2))
 st.write("前年比の相関係数：{:.2f}".format(cor_ann2))
+
+st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数（公表されている最新月は{latest_date}）。「Google Search」は{kw2}のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
 
 st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
