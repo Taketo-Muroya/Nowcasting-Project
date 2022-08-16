@@ -410,10 +410,11 @@ if st.button('推計開始'):
   ax.plot(future_estimate.index, future_estimate, linestyle='-', color='#e46409', label='Nowcasting')
   ax.legend()
   st.pyplot(fig)
+  latest_week, time = str(df_concat.index[-1]).split()
   #st.write(df_concat.tail().T)
 
   st.write('##### オレンジ色で表示されている部分が、最新のGoogle検索数によってナウキャスティングされた景気動向指数の予測値です。')
 
-  st.caption(f'(※) {kw1}と{kw2}の週次のGoogle検索数のトレンド成分と三期前までの週次の景気動向指数を説明変数として、当期の景気動向指数を予測している。モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{df_concat.index[-1]}までの予測が可能となっている。')
+  st.caption(f'(※) {kw1}と{kw2}のGoogle検索数のトレンド成分（週次）と三期前までの景気動向指数（週次）を説明変数として、当期の景気動向指数（週次）を予測している。モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{latest_week}までの予測が可能となっている。')
 
   comment.write('推計完了') 
