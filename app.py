@@ -289,6 +289,7 @@ y = ibc[228:]
 y = y.set_index('time')
 y.index = X[:len(ibc)-228].index
 ts = pd.merge(y, X, on='date')
+latest_date = ts.index[-1].datetime.date()
 
 # データ期間の設定
 ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
@@ -316,7 +317,7 @@ cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関係数：{:.2f}".format(cor_level1))
 st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
 
-st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数。公表されている最新値は{ts.index[-1]}。「Google Search」は{kw1}のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
+st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数。公表されている最新月は{latest_date}。「Google Search」は{kw1}のGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
 
 st.write('-----------------------------------------------')
 
