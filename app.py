@@ -29,6 +29,7 @@ plt.rcParams['font.family'] = 'IPAexGothic'
 pytrends = TrendReq(hl='ja-JP', tz=360)
 
 # 関数 -------------------------------------------------------------------------------------
+# 景気動向指数のデータをHPからWebスクレイピングで自動取得する関数
 def get_ibc_data(url):
   url_index = url + 'di.html'
   res = requests.get(url_index)
@@ -60,6 +61,7 @@ def get_ibc_data(url):
   
   return ibc
 
+# グーグルの検索情報をAPIを用いて自動取得する関数（月次）
 def google_trend(kw):
   #@st.cache
   kw_list = [kw]
@@ -77,6 +79,7 @@ def google_trend(kw):
 
   return data
 
+# グーグルの検索情報をAPIを用いて自動取得する関数（週次）
 def weekly_google_trend(kw):
   # Get the weekly google trend data
   kw_list = [kw]
@@ -92,6 +95,7 @@ def weekly_google_trend(kw):
 
   return data
 
+# 機械学習に備えたデータ整理をする関数
 def multivariate_data(dataset, target, start_index, end_index, 
                       history_size, target_size, step, single_step=False):
   data = []
@@ -116,6 +120,7 @@ def multivariate_data(dataset, target, start_index, end_index,
 
   return np.array(data), np.array(labels)
 
+# 推計の精度を計算する関数
 def model_eval_metrics(y_true, y_pred, classification="TRUE"):
      if classification=="TRUE":
         accuracy_eval = accuracy_score(y_true, y_pred)
@@ -145,6 +150,7 @@ def model_eval_metrics(y_true, y_pred, classification="TRUE"):
         finalmetricdata = pd.DataFrame.from_dict(metricdata)
      return finalmetricdata
 
+# 機械学習（LSTM-RNN）を実行する関数
 def lstm_rnn(features):
   # set training percentage
   TRAIN_SPLIT = round(0.75*len(features))
@@ -221,6 +227,7 @@ def lstm_rnn(features):
 
   return output, test_score, single_step_model
 
+# 週次データによってナウキャスティングを実行する関数
 def nowcasting(XX):
 
   # feature scaling
@@ -273,7 +280,7 @@ def nowcasting(XX):
 
 # 本体 -------------------------------------------------------------------------------------
 # サイドバー
-st.sidebar.title('Google検索数による景気予測ツールです。')
+st.sidebar.title('#### Google検索数による景気予測ツールです。')
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("データ開始時期を設定してください", datetime.datetime(2004, 1, 1))
