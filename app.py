@@ -280,7 +280,7 @@ def nowcasting(XX):
 
 # 本体 -------------------------------------------------------------------------------------
 # サイドバー
-st.sidebar.title('#### Google検索数による景気予測ツールです。')
+st.sidebar.title("#### Google検索数による景気予測ツールです。")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("データ開始時期を設定してください", datetime.datetime(2004, 1, 1))
@@ -360,7 +360,7 @@ if st.button('推計開始'):
   ts = ts.drop(ts.columns[[1, 2, 4, 5, 7]], axis=1)
   output, test_score, single_step_model = lstm_rnn(ts)
 
-  st.write(f"""##### ● 推計された景気動向指数""")
+  st.write("""##### ● 推計された景気動向指数""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
   ax.plot(output.index, output.iloc[:,1], linestyle='-', color='b', label='Actual')
