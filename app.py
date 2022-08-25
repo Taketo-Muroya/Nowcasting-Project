@@ -273,7 +273,7 @@ def nowcasting(XX):
 
 # 本体 -------------------------------------------------------------------------------------
 # サイドバー
-st.sidebar.write("""Google検索数による景気予測ツールです。""")
+st.sidebar.title('Google検索数による景気予測ツールです。')
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("データ開始時期を設定してください", datetime.datetime(2004, 1, 1))
@@ -418,6 +418,6 @@ if st.button('推計開始'):
 
   st.caption(f'(※) 月次で推計した際のGoogle検索数（{kw1}及び{kw2}）のトレンド成分と景気動向指数の関係性に対して、\
     週次のGoogle検索数のトレンド成分と三期前までの週次の景気動向指数を当てはめ、景気動向指数（週次）を予測している。\
-    モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{latest_week}までの予測が可能となっている。')
+     モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{latest_week}までの予測が可能となっている。')
 
   comment.write('推計完了') 
