@@ -215,7 +215,7 @@ def lstm_rnn(features):
     model_eval_metrics(y_val_single, single_step_model.predict(x_val_single), classification="FALSE")
     test_score = r2_score(y_val_single, single_step_model.predict(x_val_single))
   
-  # visualize the result
+  # save the result
   predict = pd.DataFrame(single_step_model.predict(x_val_single)*data_std[0]+data_mean[0])
   predict.index = features.iloc[TRAIN_SPLIT+past_history:,:].index
 
@@ -280,13 +280,13 @@ def nowcasting(XX):
 
 # 本体 -------------------------------------------------------------------------------------
 # サイドバー
-st.sidebar.text("### Google検索数による景気予測ツールです。")
+st.sidebar.subheader("Google検索数による景気予測ツールです。")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("データ開始時期を設定してください", datetime.datetime(2004, 1, 1))
 end = st.sidebar.date_input("データ終了時期を設定してください", datetime.datetime.today())
 
-# 景気動向指数とグーグル検索数の統合
+# 景気動向指数とグーグル検索数を取得して統合
 ibc = get_ibc_data('https://www.esri.cao.go.jp/jp/stat/di/')
 data1 = google_trend(kw1)
 data2 = google_trend(kw2)
@@ -300,12 +300,13 @@ latest_date, time = str(ts.index[-1]).split()
 # データ期間の設定
 ts = ts[(ts.index >= pd.to_datetime(start)) & (ts.index <= pd.to_datetime(end))]
 
+# 本ページ
 st.title('景気ナウキャスティング')
 st.write("#####  ")
 st.write("##### まず、景気動向指数とGoogle検索数の相関関係を確認します。検索ワードやデータ期間は左の記入欄から変更することができます。")
 st.write("#####  ")
 
-# グーグル検索数のグラフ
+# グーグル検索数のグラフ１
 st.write(f"""##### ● 景気動向指数と「{kw1}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
@@ -317,7 +318,7 @@ ax.plot(ts.index, ts.iloc[:,3], linestyle='-', color='b', label='Trend Element')
 ax.legend()
 st.pyplot(fig)
 
-# 相関係数の計算
+# 相関係数の計算１
 cor_level1 = ts.iloc[:,0].corr(ts.iloc[:,3])
 cor_ann1 = ts.iloc[:,1].corr(ts.iloc[:,4])
 st.write("水準の相関係数：{:.2f}".format(cor_level1))
@@ -325,6 +326,7 @@ st.write("前年比の相関係数：{:.2f}".format(cor_ann1))
 
 st.write("#####  ")
 
+# グーグル検索数のグラフ２
 st.write(f"""##### ● 景気動向指数と「{kw2}」のGoogle検索数""")
 fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
@@ -336,17 +338,19 @@ ax.plot(ts.index, ts.iloc[:,6], linestyle='-', color='b', label='Trend Element')
 ax.legend()
 st.pyplot(fig)
 
-# 相関係数の計算
+# 相関係数の計算２
 cor_level2 = ts.iloc[:,0].corr(ts.iloc[:,6])
 cor_ann2 = ts.iloc[:,1].corr(ts.iloc[:,7])
 st.write("水準の相関係数：{:.2f}".format(cor_level2))
 st.write("前年比の相関係数：{:.2f}".format(cor_ann2))
 
+# 補足説明
 st.caption(f'(※)「Indexes of Business Conditions」は景気動向指数の一致指数（最新月は{latest_date}が公表されている）。\
   「Google Search」はGoogle検索数を月次集計し指数化したもの。「Trend Element」はそのGoogle検索数のトレンド成分。\
     「水準の相関係数」は景気動向指数とトレンド成分の水準について相関係数を計算したもの。\
       「前年比の相関係数」は景気動向指数とトレンド成分の前年比について相関係数を計算したもの。')
 
+# 推計開始ボタン
 st.write('-----------------------------------------------')
 st.write("##### 推計開始ボタンを押すと、Google検索数を用いて景気動向指数を推計します。")
 st.write("#####  ")
@@ -360,6 +364,7 @@ if st.button('推計開始'):
   ts = ts.drop(ts.columns[[1, 2, 4, 5, 7]], axis=1)
   output, test_score, single_step_model = lstm_rnn(ts)
 
+  # 推計結果の図示
   st.write("""##### ● 推計された景気動向指数""")
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1)
@@ -370,7 +375,8 @@ if st.button('推計開始'):
   st.pyplot(fig)
   st.write(output.tail().T)
   st.write("Test set score（決定係数）: {:.2f}".format(test_score))
-
+  
+  # 補足説明
   st.caption(f'(※) {kw1}と{kw2}のGoogle検索数のトレンド成分と一期前の景気動向指数を用いて、当期の景気動向指数を推計している。\
     モデルはRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。')
   
@@ -381,7 +387,8 @@ if st.button('推計開始'):
   # 週次のグーグル検索数の取得
   df1 = weekly_google_trend(kw1)
   df2 = weekly_google_trend(kw2)
-
+  
+  # 週次のグーグル検索数のグラフ
   st.write(f"""##### ● 「{kw1}」&「{kw2}」のGoogle検索数（週次）""")
   fig = plt.figure()
   ax = fig.add_subplot(2, 1, 1)
@@ -409,7 +416,7 @@ if st.button('推計開始'):
   temp5 = pd.merge(temp3, temp4, on='monthly', how='right')
   XX = temp5[['date_y','Coincident Index','trend_x_y','trend_y_y']].set_index('date_y')
 
-  # Nowcasting
+  # Nowcastingの図示
   past_estimate, future_estimate, df_concat = nowcasting(XX)
   st.write(f"""##### ● 推計された景気動向指数（週次）""")
   fig = plt.figure()
@@ -421,8 +428,8 @@ if st.button('推計開始'):
 
   st.write('##### オレンジ色で表示されている部分が、最新のGoogle検索数によってナウキャスティングされた景気動向指数の予測値です。')
 
+  # 補足説明
   latest_week, time = str(df_concat.index[-1]).split()
-
   st.caption(f'(※) 月次で推計した際のGoogle検索数（{kw1}及び{kw2}）のトレンド成分と景気動向指数の関係性に対して、\
     週次のGoogle検索数のトレンド成分と三期前までの週次の景気動向指数を当てはめ、景気動向指数（週次）を予測している。\
      モデルは同様にRNN-LSTM（Recurrent Neural Network - Long Short Term Memory）を使用している。{latest_week}までの予測が可能となっている。')
