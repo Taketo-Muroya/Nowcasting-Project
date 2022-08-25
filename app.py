@@ -280,7 +280,7 @@ def nowcasting(XX):
 
 # 本体 -------------------------------------------------------------------------------------
 # サイドバー
-st.sidebar.title("#### Google検索数による景気予測ツールです。")
+st.sidebar.text("Google検索数による景気予測ツールです。")
 kw1 = st.sidebar.text_input('検索ワードを記入してください', '失業')
 kw2 = st.sidebar.text_input('検索ワードを記入してください', '貯金')
 start = st.sidebar.date_input("データ開始時期を設定してください", datetime.datetime(2004, 1, 1))
