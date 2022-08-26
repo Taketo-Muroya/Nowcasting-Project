@@ -162,7 +162,7 @@ def lstm_rnn(features):
   dataset = (dataset-data_mean)/data_std
 
   # create the training and test data
-  past_history = 1
+  past_history = 
   future_target = 0
   STEP = 1
 
