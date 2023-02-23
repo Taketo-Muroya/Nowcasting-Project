@@ -3,5 +3,6 @@ statsmodels
 pytrends
 tensorflow
 sklearn
+scikit-learn
 bs4
 openpyxl
